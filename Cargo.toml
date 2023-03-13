@@ -1,0 +1,20 @@
+[package]
+name = "filesharing"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+axum = { version = "0.6.8", features = ["multipart"] }
+bcrypt = "0.14.0"
+dotenv = "0.15.0"
+futures = "0.3.26"
+maud = { version = "0.24.0", features = ["axum"] }
+mime_guess = "2.0.4"
+serde = { version = "1.0.152", features = ["derive"] }
+sqlx = { version = "0.6.2", features = ['runtime-tokio-native-tls', "sqlite", "chrono"] }
+tokio = { version = "1.25.0", features = ["macros", "rt-multi-thread", "fs"] }
+tokio-util = { version = "0.7.7", features = ["io"] }
+# typed-html = "0.2.2"
+uuid = { version = "1.3.0", features = ["v4"] }

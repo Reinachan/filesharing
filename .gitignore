@@ -1,0 +1,10 @@
+# Environment variables
+.env
+
+# Build files
+/target
+
+# Database
+db/
+files/
+
