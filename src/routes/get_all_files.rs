@@ -1,4 +1,4 @@
-use crate::actions::get_files_from_db;
+use crate::db::get_files_from_db;
 use axum::{extract::State, response::IntoResponse, Json};
 use serde::Serialize;
 use sqlx::{Pool, Sqlite};

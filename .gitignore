@@ -5,6 +5,6 @@
 /target
 
 # Database
-db/
-files/
+/db
+/files
 

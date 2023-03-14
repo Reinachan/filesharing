@@ -1,0 +1,120 @@
+/* General */
+:root {
+    background-color: black;
+    color: white;
+    font-family: 'sans-serif';
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+/* Nav */
+nav ul {
+    display: flex;
+    gap: 10px;
+}
+
+nav li a {
+    color: #aaa;
+}
+
+nav li a.current {
+    color: #fff;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+form label {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+form label input {
+    width: 200px;
+}
+
+/* Files List */
+.files-list {
+    display: grid;
+}
+
+.files-list li {
+    display: grid;
+    padding: 10px;
+    border-bottom: 1px solid #555;
+    gap: 10px;
+    overflow-x: scroll;
+}
+
+.files-list :is(.header, .content, .metadata) {
+    display: flex;
+    justify-content: flex-start;
+    column-gap: 8px;
+}
+
+.files-list .metadata > p {
+    color: #888;
+}
+
+.files-list h3 {
+    font-size: 1.1rem;
+    margin: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-all;
+}
+
+.files-list p {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0;
+    word-wrap: break-word;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.files-list img {
+    width: 0.8rem;
+}
+
+.files-list form {
+    grid-area: delete;
+}
+
+.files-list button {
+    color: white;
+    background-color: #781212;
+    padding: 0px 3px;
+    border: 1px solid white;
+    font-weight: 800;
+    font-size: 1.1rem;
+    border-radius: 5px;
+}
+
+.files-list button:hover {
+    background-color: #941313;
+
+}
+
+.files-list .deleted {
+    background-color: #290c0c
+}

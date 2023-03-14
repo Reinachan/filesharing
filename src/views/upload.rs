@@ -7,9 +7,17 @@ pub async fn upload() -> Html<String> {
             (DOCTYPE)
             head {
                 title { "Filehost" }
+                link rel="stylesheet" type="text/css" href="assets/styles.css";
             }
             body {
-                h1 { "Download File" }
+                nav {
+                    ul {
+                        li { a href="/" { "home" }}
+                        li { a class="current" href="/upload" { "upload" }}
+                        li { a href="/files" { "files list" }}
+                    }
+                }
+                h2 { "Upload File" }
                 form action="/upload" method="post" enctype="multipart/form-data" {
                     label {
                         "Upload file:"
@@ -23,11 +31,6 @@ pub async fn upload() -> Html<String> {
                     br;
                     label {
                         "Add password?"
-                        input type="text" name="password";
-                    }
-                    br;
-                    label {
-                        "Password"
                         input type="text" name="password";
                     }
                     br;

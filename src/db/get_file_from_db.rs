@@ -9,7 +9,7 @@ pub async fn get_file_from_db(
 ) -> Result<FileWithPassword, (StatusCode, String)> {
     let file: FileWithPassword = match sqlx::query!(
         "
-    SELECT * FROM files WHERE file_name=?
+    SELECT * FROM files WHERE saved_name=?
     ",
         file_name
     )
@@ -17,6 +17,7 @@ pub async fn get_file_from_db(
     .await
     {
         Ok(res) => FileWithPassword {
+            saved_name: res.saved_name,
             file_name: res.file_name,
             file_type: res.file_type,
             destroy: res.destroy.map(|destroy| destroy.timestamp()),

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="icon-rubbish"
+   x="0px"
+   y="0px"
+   viewBox="0 0 120 120"
+   xml:space="preserve"
+   version="1.1"
+   sodipodi:docname="rubbish.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs2619" /><sodipodi:namedview
+   id="namedview2617"
+   pagecolor="#505050"
+   bordercolor="#eeeeee"
+   borderopacity="1"
+   inkscape:showpageshadow="0"
+   inkscape:pageopacity="0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#505050"
+   showgrid="false"
+   inkscape:zoom="3.0258278"
+   inkscape:cx="-46.268331"
+   inkscape:cy="102.12082"
+   inkscape:window-width="2560"
+   inkscape:window-height="1355"
+   inkscape:window-x="0"
+   inkscape:window-y="0"
+   inkscape:window-maximized="1"
+   inkscape:current-layer="icon-rubbish" />
+<polygon
+   points="111.598,25.291 8.403,25.291 10.403,9.756 109.598,9.756 "
+   id="polygon2610"
+   style="fill:#ffffff;fill-opacity:1" />
+<polygon
+   points="76.842,10.474 43.158,10.474 46.158,3 73.842,3 "
+   id="polygon2612"
+   style="fill:#ffffff;fill-opacity:1" />
+<polygon
+   points="85.352,30.817 85.352,104.695 78.118,104.695 78.118,30.817 63.617,30.817 63.617,104.695 56.383,104.695          56.383,30.817 40.887,30.817 40.887,104.695 33.654,104.695 33.654,30.817 15.017,30.817 20.017,116.57 99.982,116.57          105.982,30.817 "
+   id="polygon2614"
+   style="fill:#ffffff;fill-opacity:1" />
+</svg>

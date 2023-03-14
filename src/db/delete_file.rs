@@ -1,18 +1,11 @@
-use axum::{
-    extract::{Path, State},
-    http::StatusCode,
-    response::IntoResponse,
-};
+use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 use std::fs::remove_file;
 
 use crate::constants::ROOT_FOLDER;
 
-pub async fn delete_file(
-    Path(payload): Path<String>,
-    State(db): State<Pool<Sqlite>>,
-) -> impl IntoResponse {
-    match remove_file(format!("{}/{}", ROOT_FOLDER, payload)) {
+pub async fn delete_file(db: Pool<Sqlite>, saved_name: String) -> (StatusCode, String) {
+    match remove_file(format!("{}/{}", ROOT_FOLDER, saved_name)) {
         Ok(_) => (),
         Err(err) => match err.kind() {
             std::io::ErrorKind::NotFound => (),
@@ -27,9 +20,9 @@ pub async fn delete_file(
 
     match sqlx::query!(
         "
-    DELETE FROM files WHERE file_name = ?
+    DELETE FROM files WHERE saved_name = ?
     ",
-        payload
+        saved_name
     )
     .fetch_all(&db)
     .await

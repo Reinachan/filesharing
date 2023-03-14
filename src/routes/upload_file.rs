@@ -7,7 +7,7 @@ use bcrypt::{hash, DEFAULT_COST};
 use sqlx::{Pool, Sqlite};
 use uuid::Uuid;
 // use futures::stream::StreamExt;
-use crate::constants::ROOT_FOLDER;
+use crate::constants::{ROOT_FOLDER, SERVER_DOMAIN};
 use std::fs::write;
 
 pub async fn upload_file(
@@ -33,7 +33,9 @@ pub async fn upload_file(
             file = field.bytes().await.unwrap();
         } else if field_name == *"password" {
             let field_password = field.text().await.unwrap();
-            password = hash(field_password, DEFAULT_COST).unwrap();
+            if field_password.chars().count() > 0 {
+                password = hash(field_password, DEFAULT_COST).unwrap();
+            }
         } else if field_name == "destroy" {
             destroy = field.text().await.unwrap();
             println!("{destroy}");
@@ -44,27 +46,29 @@ pub async fn upload_file(
         return (StatusCode::BAD_REQUEST, "No file included".to_string());
     }
 
-    if password.chars().count() < 1 {
-        name = format!(
-            "{}.{}",
-            Uuid::new_v4(),
-            match name.split('.').last() {
-                Some(ext) => ext,
-                None =>
-                    return (
-                        StatusCode::BAD_REQUEST,
-                        "File lacks file extension".to_string()
-                    ),
-            }
-        );
-    }
+    let saved_name = format!(
+        "{}.{}",
+        Uuid::new_v4(),
+        match name.split('.').last() {
+            Some(ext) => ext,
+            None =>
+                return (
+                    StatusCode::BAD_REQUEST,
+                    "File lacks file extension".to_string()
+                ),
+        }
+    );
 
-    write(format!("{}/{}", ROOT_FOLDER, &name), file).expect("couldn't create file");
+    match write(format!("{}/{}", ROOT_FOLDER, &saved_name), file) {
+        Ok(_) => (),
+        Err(err) => return (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()),
+    };
 
     match sqlx::query!(
         "
-        INSERT INTO files (file_name, file_type) values (?, ?)
+        INSERT INTO files (saved_name, file_name, file_type) values (?, ?, ?)
         ",
+        saved_name,
         name,
         data_type,
     )
@@ -85,15 +89,15 @@ pub async fn upload_file(
             "
             UPDATE files 
             SET password = ?
-            WHERE file_name = ?
+            WHERE saved_name = ?
             ",
             password,
-            name,
+            saved_name,
         )
         .execute(&state)
         .await
         {
-            Ok(_) => (StatusCode::OK, format!("localhost:3000/{}", name)),
+            Ok(_) => (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name)),
             Err(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Couldn't save".to_owned(),
@@ -106,15 +110,15 @@ pub async fn upload_file(
             "
             UPDATE files 
             SET destroy = ?
-            WHERE file_name = ?
+            WHERE saved_name = ?
             ",
             destroy,
-            name,
+            saved_name,
         )
         .execute(&state)
         .await
         {
-            Ok(_) => (StatusCode::OK, format!("localhost:3000/{}", name)),
+            Ok(_) => (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name)),
             Err(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Couldn't save".to_owned(),
@@ -122,5 +126,5 @@ pub async fn upload_file(
         };
     };
 
-    (StatusCode::OK, format!("localhost:3000/{}", name))
+    (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name))
 }

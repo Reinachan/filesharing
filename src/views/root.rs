@@ -7,9 +7,17 @@ pub async fn root() -> Html<String> {
             (DOCTYPE)
             head {
                 title { "Filehost" }
+                link rel="stylesheet" type="text/css" href="assets/styles.css";
             }
             body {
-                h1 { "Download File" }
+                nav {
+                    ul {
+                        li { a class="current" href="/" { "home" }}
+                        li { a href="/upload" { "upload" }}
+                        li { a href="/files" { "files list" }}
+                    }
+                }
+                h2 { "Download File" }
                 form action="/" method="post" enctype="multipart/form-data" {
                     label {
                         "Filename"

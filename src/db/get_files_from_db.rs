@@ -16,6 +16,7 @@ pub async fn get_files_from_db(db: Pool<Sqlite>) -> Result<Vec<File>, (StatusCod
             let test = all_files
                 .iter()
                 .map(|file| File {
+                    saved_name: file.saved_name.to_owned(),
                     file_name: file.file_name.to_owned(),
                     file_type: file.file_type.to_owned(),
                     destroy: file.destroy.map(|destroy| destroy.timestamp()),
