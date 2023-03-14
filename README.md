@@ -21,4 +21,8 @@ Current state is alpha. It has most of the functionality in place. I wouldn't re
 - Optional destruction timeout
 - Files should be accessible on disk
 
+## License
+
+The code is licensed under the AGPLv3 license. The icons in the `assets` folder are all public domain icons.
+
 <img src="./plan.excalidraw.png" alt="" />
