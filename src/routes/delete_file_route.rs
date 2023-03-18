@@ -1,18 +1,39 @@
-use std::collections::HashMap;
-
 use axum::{
-    extract::{Multipart, Query, State},
+    extract::{Multipart, State},
+    headers::Cookie,
     http::StatusCode,
-    response::{Html, IntoResponse},
+    response::Html,
+    TypedHeader,
 };
 use sqlx::{Pool, Sqlite};
 
-use crate::db::delete_file;
+use crate::{
+    db::delete_file,
+    handlers::{check_auth, AuthOrBasic},
+    models::Permissions,
+};
 
 pub async fn delete_file_route(
+    TypedHeader(cookie): TypedHeader<Cookie>,
     State(db): State<Pool<Sqlite>>,
     mut multipart: Multipart,
-) -> impl IntoResponse {
+) -> Result<(StatusCode, Html<String>), (StatusCode, String)> {
+    let _user = match check_auth(
+        &db,
+        AuthOrBasic::Cookie(cookie),
+        Some(Permissions {
+            create_users: false,
+            upload_files: false,
+            list_files: false,
+            delete_files: true,
+        }),
+    )
+    .await
+    {
+        Ok(val) => val,
+        Err(err) => return Err(err),
+    };
+
     let mut saved_name = String::new();
 
     while let Some(field) = multipart.next_field().await.unwrap() {
@@ -23,11 +44,11 @@ pub async fn delete_file_route(
         }
     }
 
-    let deletion = delete_file(db, saved_name).await;
+    let deletion = delete_file(&db, saved_name).await?;
 
     if deletion.0 == StatusCode::OK {
-        return (StatusCode::OK, Html("<p>deleted</p>".to_string()));
+        return Ok((StatusCode::OK, Html("<p>deleted</p>".to_string())));
     };
 
-    (deletion.0, Html(format!("<p>{}</p>", deletion.1)))
+    Ok((deletion.0, Html(format!("<p>{}</p>", deletion.1))))
 }

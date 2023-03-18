@@ -16,7 +16,7 @@ pub async fn get_file(
 ) -> impl IntoResponse {
     let db_file = get_file_from_db(db, file_name.clone()).await?;
 
-    if db_file.hashed_password.is_some() {
+    if db_file.password.is_some() {
         return Err((StatusCode::NOT_FOUND, "File not found".to_owned()));
     }
 

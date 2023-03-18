@@ -15,6 +15,7 @@ pub async fn root() -> Html<String> {
                         li { a class="current" href="/" { "home" }}
                         li { a href="/upload" { "upload" }}
                         li { a href="/files" { "files list" }}
+                        li { a href="/signin" { "sign in" }}
                     }
                 }
                 h2 { "Download File" }

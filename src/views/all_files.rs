@@ -1,15 +1,29 @@
-use axum::{extract::State, http::StatusCode, response::Html};
+use axum::{extract::State, headers::Cookie, http::StatusCode, response::Html, TypedHeader};
 use maud::{html, PreEscaped, DOCTYPE};
-use sqlx::{
-    types::chrono::{DateTime, NaiveDateTime, Utc},
-    Pool, Sqlite,
+use sqlx::{Pool, Sqlite};
+
+use crate::{
+    db::get_files_from_db,
+    handlers::{check_auth, AuthOrBasic},
+    models::Permissions,
 };
 
-use crate::db::get_files_from_db;
-
 pub async fn all_files(
+    TypedHeader(cookie): TypedHeader<Cookie>,
     State(db): State<Pool<Sqlite>>,
 ) -> Result<Html<String>, (StatusCode, String)> {
+    let _user = check_auth(
+        &db,
+        AuthOrBasic::Cookie(cookie),
+        Some(Permissions {
+            create_users: false,
+            upload_files: false,
+            list_files: true,
+            delete_files: false,
+        }),
+    )
+    .await?;
+
     let files = get_files_from_db(db).await?;
 
     Ok(Html(
@@ -25,6 +39,7 @@ pub async fn all_files(
                         li { a href="/" { "home" }}
                         li { a href="/upload" { "upload" }}
                         li { a class="current" href="/files" { "files list" }}
+                        li { a href="/signin" { "sign in" }}
                     }
                 }
                 h2 { "File list" }
@@ -48,14 +63,26 @@ pub async fn all_files(
                                 p class="saved-name" { (file.saved_name) }
                             }
                             div class="metadata" {
-                                @if file.password_protected {
+                                @if file.password.is_some() {
                                     img type="image/svg+xml" src="assets/key.svg";
                                 } @else {
                                     img type="image/svg+xml" src="assets/unlocked.svg";
                                 }
                                 p { (file.file_type) }
                                 @if file.destroy.is_some() {
-                                    p class="timestamp" { ( DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp_opt(file.destroy.unwrap(), 0).unwrap(), Utc).format("%Y/%m/%d %H:%M").to_string() ) }
+                                    p class="timestamp" {
+                                        time datetime=(
+                                            file.destroy.unwrap()
+                                                .format("%Y-%m-%dT%H:%M:%S")
+                                                .to_string()
+                                        ) {
+                                            (
+                                                file.destroy.unwrap()
+                                                    .format("%Y/%m/%d %H:%M")
+                                                    .to_string()
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }

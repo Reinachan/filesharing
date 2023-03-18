@@ -1,10 +1,10 @@
 use axum::{
     body::StreamBody,
-    extract::{Multipart, Path, State},
+    extract::{Multipart, State},
     http::{header, StatusCode},
     response::{AppendHeaders, IntoResponse},
 };
-use bcrypt::{hash, verify, DEFAULT_COST};
+use bcrypt::verify;
 use sqlx::{Pool, Sqlite};
 use tokio::fs::File;
 use tokio_util::io::ReaderStream;
@@ -41,8 +41,8 @@ pub async fn download_file(
         }
     };
 
-    if db_file.hashed_password.is_some() {
-        let verified = match verify(password, &db_file.hashed_password.unwrap()) {
+    if db_file.password.is_some() {
+        let verified = match verify(password, &db_file.password.unwrap()) {
             Ok(value) => value,
             Err(err) => {
                 return Err((

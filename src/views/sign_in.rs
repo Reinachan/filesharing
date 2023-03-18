@@ -1,7 +1,7 @@
 use axum::response::Html;
 use maud::{html, DOCTYPE};
 
-pub async fn upload() -> Html<String> {
+pub async fn sign_in() -> Html<String> {
     Html(
         html! {
             (DOCTYPE)
@@ -13,29 +13,24 @@ pub async fn upload() -> Html<String> {
                 nav {
                     ul {
                         li { a href="/" { "home" }}
-                        li { a class="current" href="/upload" { "upload" }}
+                        li { a href="/upload" { "upload" }}
                         li { a href="/files" { "files list" }}
-                        li { a href="/signin" { "sign in" }}
+                        li { a class="current" href="/signin" { "sign in" }}
                     }
                 }
-                h2 { "Upload File" }
-                form action="/upload" method="post" enctype="multipart/form-data" {
+                h2 { "Sign In" }
+                form action="/auth" method="post" enctype="multipart/form-data" {
                     label {
-                        "Upload file:"
-                        input type="file" name="file";
+                        "Username"
+                        input type="text" name="username";
                     }
                     br;
                     label {
-                        "Destroy file at approx:"
-                        input type="datetime-local" name="destroy";
-                    }
-                    br;
-                    label {
-                        "Add password?"
+                        "Password"
                         input type="text" name="password";
                     }
                     br;
-                    input type="submit" value="Upload file";
+                    input type="submit" value="sign in";
                 }
             }
         }

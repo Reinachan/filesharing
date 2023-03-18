@@ -2,6 +2,7 @@ use std::env::var;
 
 use lazy_static::lazy_static;
 
+pub const AUTH_COOKIE: &str = "Authorization";
 pub const ROOT_FOLDER: &str = "files";
 
 lazy_static! {

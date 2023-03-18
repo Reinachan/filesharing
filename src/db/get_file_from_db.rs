@@ -1,13 +1,14 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-use crate::models::{File, FileWithPassword};
+use crate::models::FileDB;
 
 pub async fn get_file_from_db(
     db: Pool<Sqlite>,
     file_name: String,
-) -> Result<FileWithPassword, (StatusCode, String)> {
-    let file: FileWithPassword = match sqlx::query!(
+) -> Result<FileDB, (StatusCode, String)> {
+    let file = match sqlx::query_as!(
+        FileDB,
         "
     SELECT * FROM files WHERE saved_name=?
     ",
@@ -16,13 +17,7 @@ pub async fn get_file_from_db(
     .fetch_one(&db)
     .await
     {
-        Ok(res) => FileWithPassword {
-            saved_name: res.saved_name,
-            file_name: res.file_name,
-            file_type: res.file_type,
-            destroy: res.destroy.map(|destroy| destroy.timestamp()),
-            hashed_password: res.password,
-        },
+        Ok(res) => res,
         Err(_) => return Err((StatusCode::NOT_FOUND, "File not found".to_owned())),
     };
 

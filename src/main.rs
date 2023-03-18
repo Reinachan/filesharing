@@ -1,25 +1,26 @@
 mod constants;
 mod db;
-mod helpers;
+mod handlers;
 mod models;
 mod routes;
+mod tasks;
 mod views;
 
 use constants::ROOT_FOLDER;
-use helpers::scheduled_deletion;
-use routes::{delete_file_route, download_file, get_all_files, get_file, upload_file};
+use routes::{delete_file_route, download_file, get_file, upload_file};
+use tasks::scheduled_deletion;
 use tower_http::services::ServeDir;
 use views::{all_files, root, upload};
 
 use axum::{
     extract::DefaultBodyLimit,
-    routing::{delete, get, post},
+    routing::{get, post},
     Router,
 };
 use sqlx::SqlitePool;
 use std::{fs::create_dir, path, time::Duration};
 
-use crate::constants::SERVER_DOMAIN;
+use crate::{constants::SERVER_DOMAIN, routes::auth, tasks::create_default_user, views::sign_in};
 
 #[tokio::main]
 async fn main() {
@@ -41,13 +42,18 @@ async fn main() {
         .await
         .expect("No DB Pool");
 
+    create_default_user(conn.clone()).await;
+
     tokio::spawn(async {
         let conn2 = SqlitePool::connect("sqlite://db/files.db")
             .await
             .expect("No DB Pool");
 
         loop {
-            scheduled_deletion(conn2.clone()).await;
+            match scheduled_deletion(conn2.clone()).await {
+                Ok(_) => {}
+                Err(err) => println!("{err:#?}"),
+            };
             tokio::time::sleep(Duration::from_secs(60)).await;
         }
     });
@@ -55,6 +61,8 @@ async fn main() {
     // Set up routes
     let app = Router::new()
         .route("/", get(root))
+        .route("/signin", get(sign_in))
+        .route("/auth", post(auth))
         .route("/", post(download_file))
         .nest_service("/assets", ServeDir::new("assets"))
         .route("/upload", get(upload))

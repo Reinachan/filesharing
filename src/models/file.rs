@@ -1,19 +1,10 @@
-use serde::{Deserialize, Serialize};
+use sqlx::types::chrono::NaiveDateTime;
 
-#[derive(Serialize, Deserialize, Debug)]
-pub struct File {
+#[derive(Debug, Clone)]
+pub struct FileDB {
     pub saved_name: String,
     pub file_name: String,
     pub file_type: String,
-    pub destroy: Option<i64>,
-    pub password_protected: bool,
-}
-
-#[derive(Serialize, Deserialize, Debug)]
-pub struct FileWithPassword {
-    pub saved_name: String,
-    pub file_name: String,
-    pub file_type: String,
-    pub destroy: Option<i64>,
-    pub hashed_password: Option<String>,
+    pub destroy: Option<NaiveDateTime>,
+    pub password: Option<String>,
 }

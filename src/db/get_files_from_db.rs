@@ -1,10 +1,11 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-use crate::models::File;
+use crate::models::FileDB;
 
-pub async fn get_files_from_db(db: Pool<Sqlite>) -> Result<Vec<File>, (StatusCode, String)> {
-    let files: Vec<File> = match sqlx::query!(
+pub async fn get_files_from_db(db: Pool<Sqlite>) -> Result<Vec<FileDB>, (StatusCode, String)> {
+    let files = match sqlx::query_as!(
+        FileDB,
         "
     SELECT * FROM files
     "
@@ -12,19 +13,7 @@ pub async fn get_files_from_db(db: Pool<Sqlite>) -> Result<Vec<File>, (StatusCod
     .fetch_all(&db)
     .await
     {
-        Ok(all_files) => {
-            let test = all_files
-                .iter()
-                .map(|file| File {
-                    saved_name: file.saved_name.to_owned(),
-                    file_name: file.file_name.to_owned(),
-                    file_type: file.file_type.to_owned(),
-                    destroy: file.destroy.map(|destroy| destroy.timestamp()),
-                    password_protected: file.password.is_some(),
-                })
-                .collect();
-            test
-        }
+        Ok(all_files) => all_files,
         Err(err) => return Err((StatusCode::NOT_FOUND, format!("File not found: {}", err))),
     };
 

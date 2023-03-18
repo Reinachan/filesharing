@@ -1,19 +1,42 @@
 use axum::{
     body::Bytes,
     extract::{Multipart, State},
+    headers::Cookie,
     http::StatusCode,
+    TypedHeader,
 };
 use bcrypt::{hash, DEFAULT_COST};
 use sqlx::{Pool, Sqlite};
 use uuid::Uuid;
 // use futures::stream::StreamExt;
-use crate::constants::{ROOT_FOLDER, SERVER_DOMAIN};
+use crate::{
+    constants::{ROOT_FOLDER, SERVER_DOMAIN},
+    handlers::{check_auth, AuthOrBasic},
+    models::Permissions,
+};
 use std::fs::write;
 
 pub async fn upload_file(
-    State(state): State<Pool<Sqlite>>,
+    TypedHeader(cookie): TypedHeader<Cookie>,
+    State(db): State<Pool<Sqlite>>,
     mut multipart: Multipart,
 ) -> (StatusCode, String) {
+    let _user = match check_auth(
+        &db,
+        AuthOrBasic::Cookie(cookie),
+        Some(Permissions {
+            create_users: false,
+            upload_files: true,
+            list_files: false,
+            delete_files: false,
+        }),
+    )
+    .await
+    {
+        Ok(val) => val,
+        Err(err) => return err,
+    };
+
     let mut name = String::new();
     let mut data_type = String::new();
     let mut password = String::new();
@@ -72,7 +95,7 @@ pub async fn upload_file(
         name,
         data_type,
     )
-    .execute(&state)
+    .execute(&db)
     .await
     {
         Ok(_) => {}
@@ -94,7 +117,7 @@ pub async fn upload_file(
             password,
             saved_name,
         )
-        .execute(&state)
+        .execute(&db)
         .await
         {
             Ok(_) => (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name)),
@@ -115,7 +138,7 @@ pub async fn upload_file(
             destroy,
             saved_name,
         )
-        .execute(&state)
+        .execute(&db)
         .await
         {
             Ok(_) => (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name)),
