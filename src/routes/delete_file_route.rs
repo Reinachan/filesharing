@@ -2,7 +2,7 @@ use axum::{
     extract::{Multipart, State},
     headers::Cookie,
     http::StatusCode,
-    response::Html,
+    response::Redirect,
     TypedHeader,
 };
 use sqlx::{Pool, Sqlite};
@@ -17,7 +17,7 @@ pub async fn delete_file_route(
     TypedHeader(cookie): TypedHeader<Cookie>,
     State(db): State<Pool<Sqlite>>,
     mut multipart: Multipart,
-) -> Result<(StatusCode, Html<String>), (StatusCode, String)> {
+) -> Result<Redirect, (StatusCode, String)> {
     let _user = match check_auth(
         &db,
         AuthOrBasic::Cookie(cookie),
@@ -47,8 +47,8 @@ pub async fn delete_file_route(
     let deletion = delete_file(&db, saved_name).await?;
 
     if deletion.0 == StatusCode::OK {
-        return Ok((StatusCode::OK, Html("<p>deleted</p>".to_string())));
+        return Ok(Redirect::to("/files"));
     };
 
-    Ok((deletion.0, Html(format!("<p>{}</p>", deletion.1))))
+    Ok(Redirect::to("/files"))
 }

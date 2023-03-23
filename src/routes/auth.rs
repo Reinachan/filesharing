@@ -1,6 +1,6 @@
 use axum::{
     extract::{Multipart, State},
-    http::HeaderMap,
+    http::{header::SET_COOKIE, HeaderMap, HeaderValue},
     response::{IntoResponse, Redirect},
 };
 use http_auth_basic::Credentials;
@@ -39,7 +39,11 @@ pub async fn auth(State(db): State<Pool<Sqlite>>, mut multipart: Multipart) -> i
     let credentials = Credentials::new(&username, &password);
 
     let mut headers = HeaderMap::new();
-    headers.insert(AUTH_COOKIE, credentials.as_http_header().parse().unwrap());
+    headers.insert(
+        SET_COOKIE,
+        HeaderValue::from_str(format!("{}={}", AUTH_COOKIE, credentials.as_http_header()).as_str())
+            .unwrap(),
+    );
 
-    Ok((headers, Redirect::to("/")))
+    Ok((headers, Redirect::to("/upload")))
 }

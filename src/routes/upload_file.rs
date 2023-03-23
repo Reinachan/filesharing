@@ -7,6 +7,7 @@ use axum::{
 };
 use bcrypt::{hash, DEFAULT_COST};
 use sqlx::{Pool, Sqlite};
+use tokio::fs::create_dir;
 use uuid::Uuid;
 // use futures::stream::StreamExt;
 use crate::{
@@ -20,7 +21,7 @@ pub async fn upload_file(
     TypedHeader(cookie): TypedHeader<Cookie>,
     State(db): State<Pool<Sqlite>>,
     mut multipart: Multipart,
-) -> (StatusCode, String) {
+) -> Result<(StatusCode, String), (StatusCode, String)> {
     let _user = match check_auth(
         &db,
         AuthOrBasic::Cookie(cookie),
@@ -34,7 +35,7 @@ pub async fn upload_file(
     .await
     {
         Ok(val) => val,
-        Err(err) => return err,
+        Err(err) => return Err(err),
     };
 
     let mut name = String::new();
@@ -42,6 +43,7 @@ pub async fn upload_file(
     let mut password = String::new();
     let mut destroy = String::new();
     let mut file: Bytes = Bytes::new();
+    let mut chunk = false;
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let field_name = field.name().unwrap().to_string();
@@ -54,6 +56,11 @@ pub async fn upload_file(
             data_type = content_type;
 
             file = field.bytes().await.unwrap();
+        } else if field_name == *"filename" {
+            name = field.text().await.unwrap();
+            chunk = true;
+        } else if field_name == *"mime" {
+            data_type = field.text().await.unwrap();
         } else if field_name == *"password" {
             let field_password = field.text().await.unwrap();
             if field_password.chars().count() > 0 {
@@ -61,12 +68,12 @@ pub async fn upload_file(
             }
         } else if field_name == "destroy" {
             destroy = field.text().await.unwrap();
-            println!("{destroy}");
+            // println!("{destroy}");
         }
     }
 
-    if file.is_empty() {
-        return (StatusCode::BAD_REQUEST, "No file included".to_string());
+    if file.is_empty() && !chunk {
+        return Err((StatusCode::BAD_REQUEST, "No file included".to_string()));
     }
 
     let saved_name = format!(
@@ -75,19 +82,19 @@ pub async fn upload_file(
         match name.split('.').last() {
             Some(ext) => ext,
             None =>
-                return (
+                return Err((
                     StatusCode::BAD_REQUEST,
                     "File lacks file extension".to_string()
-                ),
+                )),
         }
     );
 
     match write(format!("{}/{}", ROOT_FOLDER, &saved_name), file) {
         Ok(_) => (),
-        Err(err) => return (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()),
+        Err(err) => return Err((StatusCode::INTERNAL_SERVER_ERROR, err.to_string())),
     };
 
-    match sqlx::query!(
+    sqlx::query!(
         "
         INSERT INTO files (saved_name, file_name, file_type) values (?, ?, ?)
         ",
@@ -97,18 +104,15 @@ pub async fn upload_file(
     )
     .execute(&db)
     .await
-    {
-        Ok(_) => {}
-        Err(_) => {
-            return (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "Couldn't save".to_owned(),
-            )
-        }
-    };
+    .map_err(|_| {
+        (
+            StatusCode::INTERNAL_SERVER_ERROR,
+            "Couldn't save".to_owned(),
+        )
+    })?;
 
     if password.chars().count() > 0 {
-        match sqlx::query!(
+        sqlx::query!(
             "
             UPDATE files 
             SET password = ?
@@ -119,17 +123,16 @@ pub async fn upload_file(
         )
         .execute(&db)
         .await
-        {
-            Ok(_) => (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name)),
-            Err(_) => (
+        .map_err(|_| {
+            (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Couldn't save".to_owned(),
-            ),
-        };
+            )
+        })?;
     };
 
     if destroy.chars().count() > 0 {
-        match sqlx::query!(
+        sqlx::query!(
             "
             UPDATE files 
             SET destroy = ?
@@ -140,14 +143,21 @@ pub async fn upload_file(
         )
         .execute(&db)
         .await
-        {
-            Ok(_) => (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name)),
-            Err(_) => (
+        .map_err(|_| {
+            (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Couldn't save".to_owned(),
-            ),
-        };
+            )
+        })?;
     };
 
-    (StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name))
+    if chunk {
+        let spliced_name = saved_name.split('.').next().unwrap();
+        create_dir(format!("{}/{}", ROOT_FOLDER, spliced_name))
+            .await
+            .map_err(|err| (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()))?;
+        return Ok((StatusCode::OK, saved_name));
+    }
+
+    Ok((StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, saved_name)))
 }

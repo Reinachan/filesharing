@@ -20,7 +20,12 @@ use axum::{
 use sqlx::SqlitePool;
 use std::{fs::create_dir, path, time::Duration};
 
-use crate::{constants::SERVER_DOMAIN, routes::auth, tasks::create_default_user, views::sign_in};
+use crate::{
+    constants::SERVER_DOMAIN,
+    routes::{auth, put_upload_file},
+    tasks::create_default_user,
+    views::{profile, sign_in},
+};
 
 #[tokio::main]
 async fn main() {
@@ -33,19 +38,19 @@ async fn main() {
     if !path::Path::new("db").exists() {
         create_dir(path::Path::new("db")).expect("couldn't create folder 'db'");
     }
-    if !path::Path::new("db/files.db").exists() {
-        std::fs::File::create("db/files.db").unwrap();
+    if !path::Path::new("db/files.sqlite").exists() {
+        std::fs::File::create("db/files.sqlite").unwrap();
     }
 
     // Create database pool
-    let conn = SqlitePool::connect("sqlite://db/files.db")
+    let conn = SqlitePool::connect("sqlite://db/files.sqlite")
         .await
         .expect("No DB Pool");
 
     create_default_user(conn.clone()).await;
 
     tokio::spawn(async {
-        let conn2 = SqlitePool::connect("sqlite://db/files.db")
+        let conn2 = SqlitePool::connect("sqlite://db/files.sqlite")
             .await
             .expect("No DB Pool");
 
@@ -60,13 +65,15 @@ async fn main() {
 
     // Set up routes
     let app = Router::new()
-        .route("/", get(root))
+        .route("/", get(root).post(download_file))
         .route("/signin", get(sign_in))
         .route("/auth", post(auth))
-        .route("/", post(download_file))
         .nest_service("/assets", ServeDir::new("assets"))
-        .route("/upload", get(upload))
-        .route("/upload", post(upload_file))
+        .route(
+            "/upload",
+            get(upload).post(upload_file).put(put_upload_file),
+        )
+        .route("/profile", get(profile))
         .route("/:file_name", get(get_file))
         .route("/delete", post(delete_file_route))
         .route("/files", get(all_files))

@@ -1,6 +1,31 @@
 # Filesharing Tool
 
-Current state is alpha. It has most of the functionality in place. I wouldn't recommend putting this into production yet.
+Current state is beta. It has most of the functionality in place.
+
+## Features
+
+- Accounts with permission system
+  - Upload files
+  - List files
+  - Delete files
+  - Manage accounts
+- Upload files
+  - Optional password lock
+  - Optional expiery date
+- Works without JavaScript enabled
+- Files get uploaded in chunks (requires JavaScript)
+  - Retries up to 5 times if errors occur
+  - Current progress indicator
+
+## Todo
+
+- Account management from client
+  - add accounts (admin)
+  - remove accounts (admin)
+  - change permissions (admin)
+  - change password (user)
+- Separate between unfinished chunked uploads and finished uploads
+  - add job that checks for unfinished uploads and removes remnants of old unfinished uploads
 
 ## Screenshots
 
@@ -11,18 +36,67 @@ Current state is alpha. It has most of the functionality in place. I wouldn't re
 	<td><img src="https://user-images.githubusercontent.com/16106839/225163994-14a4acbe-8e2e-4481-bd40-c673da914d28.png" />
 </table>
 
+## Build
 
-## Requirements
+In development
 
-- View all files
-- Delete files manually
-- Password protection of files
-- Optional name scrambling
-- Optional destruction timeout
-- Files should be accessible on disk
+```sh
+cargo run
+```
+
+Compile typescript
+
+```sh
+npm i -g typescript # first time only
+tsc --watch # compiles on save
+```
+
+Compile for production
+
+```sh
+tsc
+cargo build --production # optimises performance
+```
+
+Run in production
+
+```sh
+./target/release/filesharing
+```
+
+Alternatively you can use Docker. To set that up, create a `compose.yaml` file in the parent directory of this project with this content:
+
+```yaml
+version: '3.9'
+
+services:
+  filehost:
+    container_name: fileshare
+    build: ./Fileshare
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./Fileshare/files:/usr/src/fileshare/files
+      - ./Fileshare/db:/usr/src/fileshare/db
+    user: '1000:1000'
+    ports:
+      - '3000:3000' # remove this if you're using Caddy/Nginx
+```
+
+Put the `.env` file next to the `.compose.yaml` file and run
+
+```sh
+# Prepare the binary
+cd Fileshare
+cargo build --release
+tsc # assumes you've already installed typescript globally with npm
+cd ..
+# Build and run the docker container
+docker compose build
+docker compose up
+```
 
 ## License
 
-The code is licensed under the AGPLv3 license. The icons in the `assets` folder are all public domain icons.
-
-<img src="./plan.excalidraw.png" alt="" />
+The code is licensed under the AGPLv3 license. The icons in the `assets` folder are all public domain icons, some of which I've modified. All icons should be treated as being public domain.
