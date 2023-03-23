@@ -44,6 +44,14 @@ In development
 cargo run
 ```
 
+Initialise database (this may change in the future)
+
+```sh
+cargo install sqlx
+sqlx database create
+sqlx migrate run
+```
+
 Compile typescript
 
 ```sh
