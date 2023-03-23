@@ -17,16 +17,9 @@ Current state is beta. It has most of the functionality in place. You should exp
   - Retries up to 5 times if errors occur
   - Current progress indicator
 
-## Todo
+## Project progress
 
-- Account management from client
-  - add accounts (admin)
-  - remove accounts (admin)
-  - change permissions (admin)
-  - change password (user)
-- Separate between unfinished chunked uploads and finished uploads
-  - add job that checks for unfinished uploads and removes remnants of old unfinished uploads
-- Improve styling
+You can view the current progress towards 1.0 full release [here](https://github.com/users/Reinachan/projects/3/views/1)
 
 ## Screenshots
 
