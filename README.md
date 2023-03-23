@@ -1,6 +1,6 @@
 # Filesharing Tool
 
-Current state is beta. It has most of the functionality in place.
+Current state is beta. It has most of the functionality in place. You should expect bugs and breaking changes (requiring rebuilding the DB) until this leaves beta.
 
 ## Features
 
