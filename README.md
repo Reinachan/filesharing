@@ -26,14 +26,24 @@ Current state is beta. It has most of the functionality in place. You should exp
   - change password (user)
 - Separate between unfinished chunked uploads and finished uploads
   - add job that checks for unfinished uploads and removes remnants of old unfinished uploads
+- Improve styling
 
 ## Screenshots
 
+
 <table>
 <tr>
-	<td><img src="https://user-images.githubusercontent.com/16106839/225164029-6762cb87-afd3-4fd8-90f3-bc8c79f564b3.png" />
-	<td><img src="https://user-images.githubusercontent.com/16106839/225164012-62eb5ac2-6d67-4d71-ba10-7cb8e10c7b7a.png" />
-	<td><img src="https://user-images.githubusercontent.com/16106839/225163994-14a4acbe-8e2e-4481-bd40-c673da914d28.png" />
+	<td>Homepage
+	<td>Upload files page
+<tr>
+	<td><img src="https://user-images.githubusercontent.com/16106839/227304219-c2cc31e8-224c-4646-890e-22fce481ced7.png" alt="download files page" />
+	<td><img src="https://user-images.githubusercontent.com/16106839/227304323-5b19b8ca-9fc5-4e26-a4f0-633729e5ba7f.png" alt="upload files page" />
+<tr>
+	<td>Files list page
+	<td>Profile page (WIP)
+<tr>
+	<td><img src="https://user-images.githubusercontent.com/16106839/227304421-7249438d-5709-4050-8038-dbe93df403c6.png" alt="files list page" />
+	<td><img src="https://user-images.githubusercontent.com/16106839/227304464-d32f5608-4462-4149-b70a-946cc5053599.png" alt="profile page" />
 </table>
 
 ## Build
