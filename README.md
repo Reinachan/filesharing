@@ -12,7 +12,7 @@ Current state is beta. It has most of the functionality in place. You should exp
 - Upload files
   - Optional password lock
   - Optional expiery date
-- Works without JavaScript enabled
+- Works fine without JavaScript enabled, progressively enhanced with JS enabled
 - Files get uploaded in chunks (requires JavaScript)
   - Retries up to 5 times if errors occur
   - Current progress indicator
