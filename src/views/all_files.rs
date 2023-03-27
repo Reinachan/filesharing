@@ -5,7 +5,9 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     db::get_files_from_db,
     handlers::{check_auth, AuthOrBasic},
+    helpers::files_path,
     models::Permissions,
+    views::templates::{head, nav, Routes},
 };
 
 pub async fn all_files(
@@ -16,7 +18,7 @@ pub async fn all_files(
         &db,
         AuthOrBasic::Cookie(cookie),
         Some(Permissions {
-            create_users: false,
+            manage_users: false,
             upload_files: false,
             list_files: true,
             delete_files: false,
@@ -30,21 +32,9 @@ pub async fn all_files(
         html! {
             (DOCTYPE)
             html {
-                head {
-                    title { "Filehost" }
-                    link rel="stylesheet" type="text/css" href="assets/styles.css";
-                    script src="assets/list.js" defer {}
-                    meta name="viewport" content="width=device-width, initial-scale=1.0";
-                }
+                (head("Files list", Some("assets/list.js"), None))
                 body {
-                    nav {
-                        ul {
-                            li { a href="/" { "home" }}
-                            li { a href="/upload" { "upload" }}
-                            li { a class="current" href="/files" { "files list" }}
-                            li { a href="/profile" { (user.username) }}
-                        }
-                    }
+                    (nav(Routes::Files, Some(user.username), Some(user.permissions)))
                     h2 { "File list" }
                     ul class="files-list" {
                         @for file in files {
@@ -63,7 +53,10 @@ pub async fn all_files(
                                     h3 { (file.file_name) }
                                 }
                                 div class="content" {
-                                    p class="saved-name" { (file.saved_name) }
+                                    a
+                                        href={(files_path(file.saved_name.clone()))}
+                                        class="saved-name"
+                                        { (file.saved_name) }
                                 }
                                 div class="metadata" {
                                     @if file.password.is_some() {
@@ -72,15 +65,15 @@ pub async fn all_files(
                                         img type="image/svg+xml" src="assets/unlocked.svg";
                                     }
                                     p { (file.file_type) }
-                                    @if file.destroy.is_some() {
+                                    @if let Some(timestamp) = file.destroy {
                                         p class="timestamp" {
                                             time datetime=(
-                                                file.destroy.unwrap()
+                                                timestamp
                                                     .format("%Y-%m-%dT%H:%M:%S")
                                                     .to_string()
                                             ) {
                                                 (
-                                                    file.destroy.unwrap()
+                                                    timestamp
                                                         .format("%Y/%m/%d %H:%M")
                                                         .to_string()
                                                 )

@@ -37,7 +37,9 @@ pub async fn check_auth(
         AuthOrBasic::Basic(value) => value,
     };
 
-    let user = match sqlx::query_as!(
+    println!("{username} {password}");
+
+    let user = sqlx::query_as!(
         UserDB,
         "
         SELECT * FROM users WHERE username = ?
@@ -46,18 +48,16 @@ pub async fn check_auth(
     )
     .fetch_one(db)
     .await
-    {
-        Ok(val) => {
-            match verify(password, &val.password) {
-                Ok(_) => (),
-                Err(_) => return Err((StatusCode::FORBIDDEN, "Wrong password".to_string())),
-            };
-            val
-        }
-        Err(_) => return Err((StatusCode::FORBIDDEN, "Permission Denied".to_string())),
-    };
+    .map_err(|_| (StatusCode::FORBIDDEN, "Permission Denied".to_string()))?;
 
-    let permissions = match sqlx::query_as!(
+    let verified = verify(password, &user.password)
+        .map_err(|_| (StatusCode::FORBIDDEN, "Wrong password".to_string()))?;
+
+    if !verified {
+        return Err((StatusCode::FORBIDDEN, "Wrong password".to_string()));
+    }
+
+    let permissions = sqlx::query_as!(
         PermissionsDB,
         "
         SELECT * FROM permissions WHERE username = ?
@@ -66,19 +66,16 @@ pub async fn check_auth(
     )
     .fetch_one(db)
     .await
-    {
-        Ok(val) => val,
-        Err(_) => {
-            return Err((
-                StatusCode::FORBIDDEN,
-                "Not signed in, try again".to_string(),
-            ))
-        }
-    };
+    .map_err(|_| {
+        (
+            StatusCode::FORBIDDEN,
+            "Not signed in, try again".to_string(),
+        )
+    })?;
 
     if required_permissions.is_some() {
         let perm = required_permissions.unwrap();
-        if perm.create_users && !permissions.create_users {
+        if perm.manage_users && !permissions.manage_users {
             return Err(LACKING_PERMISSION.to_owned());
         }
 
@@ -98,7 +95,12 @@ pub async fn check_auth(
     Ok(User {
         username: user.username,
         password: user.password,
-        permissions,
+        permissions: Permissions {
+            manage_users: permissions.manage_users,
+            upload_files: permissions.upload_files,
+            list_files: permissions.list_files,
+            delete_files: permissions.delete_files,
+        },
         terminate: user.terminate,
     })
 }

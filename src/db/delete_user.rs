@@ -1,7 +1,7 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-pub async fn delete_user(
+pub async fn delete_user_db(
     db: &Pool<Sqlite>,
     username: String,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {

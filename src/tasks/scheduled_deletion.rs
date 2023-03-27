@@ -2,7 +2,7 @@ use axum::http::StatusCode;
 use sqlx::{types::chrono, Pool, Sqlite};
 
 use crate::{
-    db::{delete_file, delete_user},
+    db::{delete_file, delete_user_db},
     models::{FileDB, UserDB},
 };
 
@@ -54,7 +54,7 @@ pub async fn scheduled_deletion(db: Pool<Sqlite>) -> Result<(), (StatusCode, Str
                     user.username,
                     user.terminate.unwrap()
                 );
-                delete_user(&db, user.username.clone()).await?;
+                delete_user_db(&db, user.username.clone()).await?;
             }
         }
         Err(_) => todo!(),

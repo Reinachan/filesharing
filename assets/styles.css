@@ -53,11 +53,11 @@ form label input {
 }
 
 /* Files List */
-.files-list {
+:is(.files-list, .users-list) {
     display: grid;
 }
 
-.files-list li {
+:is(.files-list, .users-list) > li {
     display: grid;
     padding: 10px;
     border-bottom: 1px solid #555;
@@ -65,17 +65,17 @@ form label input {
     overflow-x: scroll;
 }
 
-.files-list :is(.header, .content, .metadata) {
+:is(.files-list, .users-list) :is(.header, .content, .metadata) {
     display: flex;
     justify-content: flex-start;
     column-gap: 8px;
 }
 
-.files-list .metadata > p {
+:is(.files-list, .users-list) .metadata > p {
     color: #888;
 }
 
-.files-list h3 {
+:is(.files-list, .users-list) h3 {
     font-size: 1.1rem;
     margin: 0;
     word-wrap: break-word;
@@ -83,7 +83,7 @@ form label input {
     word-break: break-all;
 }
 
-.files-list p {
+:is(.files-list, .users-list) p {
     flex-grow: 1;
     flex-shrink: 1;
     margin: 0;
@@ -92,15 +92,15 @@ form label input {
     color: #ccc;
 }
 
-.files-list img {
+:is(.files-list, .users-list) img {
     width: 0.8rem;
 }
 
-.files-list form {
+:is(.files-list, .users-list) .header form {
     grid-area: delete;
 }
 
-.files-list button {
+:is(.files-list, .users-list) button {
     color: white;
     background-color: #781212;
     padding: 0px 3px;
@@ -110,11 +110,27 @@ form label input {
     border-radius: 5px;
 }
 
-.files-list button:hover {
+:is(.files-list, .users-list) button:hover {
     background-color: #941313;
 
 }
 
-.files-list .deleted {
+:is(.files-list, .users-list) .deleted {
     background-color: #290c0c
+}
+
+.users-list .content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+ul li ul {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+ul li ul li input {
+    display: block;
 }

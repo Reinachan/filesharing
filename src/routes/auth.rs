@@ -1,7 +1,7 @@
 use axum::{
     extract::{Multipart, State},
-    http::{header::SET_COOKIE, HeaderMap, HeaderValue},
-    response::{IntoResponse, Redirect},
+    http::{header::SET_COOKIE, HeaderMap, HeaderValue, StatusCode},
+    response::Redirect,
 };
 use http_auth_basic::Credentials;
 use sqlx::{Pool, Sqlite};
@@ -11,7 +11,10 @@ use crate::{
     handlers::{check_auth, AuthOrBasic},
 };
 
-pub async fn auth(State(db): State<Pool<Sqlite>>, mut multipart: Multipart) -> impl IntoResponse {
+pub async fn auth(
+    State(db): State<Pool<Sqlite>>,
+    mut multipart: Multipart,
+) -> Result<(HeaderMap, Redirect), (StatusCode, String)> {
     let mut username = String::new();
     let mut password = String::new();
 
@@ -25,16 +28,12 @@ pub async fn auth(State(db): State<Pool<Sqlite>>, mut multipart: Multipart) -> i
         }
     }
 
-    let _user = match check_auth(
+    check_auth(
         &db,
         AuthOrBasic::Basic((username.clone(), password.clone())),
         None,
     )
-    .await
-    {
-        Ok(val) => val,
-        Err(err) => return Err(err),
-    };
+    .await?;
 
     let credentials = Credentials::new(&username, &password);
 

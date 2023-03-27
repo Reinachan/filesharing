@@ -1,4 +1,4 @@
-use crate::models::PermissionsDB;
+use crate::models::Permissions;
 use sqlx::types::chrono::NaiveDateTime;
 
 #[derive(Debug, Clone)]
@@ -12,6 +12,6 @@ pub struct UserDB {
 pub struct User {
     pub username: String,
     pub password: String,
-    pub permissions: PermissionsDB,
     pub terminate: Option<NaiveDateTime>,
+    pub permissions: Permissions,
 }

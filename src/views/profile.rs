@@ -5,6 +5,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     handlers::{check_auth, AuthOrBasic},
     models::Permissions,
+    views::templates::{head, nav, Routes},
 };
 
 pub async fn profile(
@@ -15,7 +16,7 @@ pub async fn profile(
         &db,
         AuthOrBasic::Cookie(cookie),
         Some(Permissions {
-            create_users: false,
+            manage_users: false,
             upload_files: false,
             list_files: false,
             delete_files: false,
@@ -24,7 +25,7 @@ pub async fn profile(
     .await?;
 
     let permissions = vec![
-        ("Manage users", user.permissions.create_users),
+        ("Manage users", user.permissions.manage_users),
         ("Upload files", user.permissions.upload_files),
         ("List files", user.permissions.list_files),
         ("Delete files", user.permissions.delete_files),
@@ -34,20 +35,9 @@ pub async fn profile(
         html! {
             (DOCTYPE)
             html {
-                head {
-                    title { "Filehost" }
-                    link rel="stylesheet" type="text/css" href="assets/styles.css";
-                    meta name="viewport" content="width=device-width, initial-scale=1.0";
-                }
+                (head(&user.username, None, None))
                 body {
-                    nav {
-                        ul {
-                            li { a href="/" { "home" }}
-                            li { a href="/upload" { "upload" }}
-                            li { a href="/files" { "files list" }}
-                            li { a class="current" href="/profile" { (user.username) }}
-                        }
-                    }
+                    (nav(Routes::Profile, Some(&user.username), Some(user.permissions)))
                     h2 { (user.username) }
                     h3 { "Permissions" }
                     ul {

@@ -18,21 +18,17 @@ pub async fn delete_file_route(
     State(db): State<Pool<Sqlite>>,
     mut multipart: Multipart,
 ) -> Result<Redirect, (StatusCode, String)> {
-    let _user = match check_auth(
+    let _user = check_auth(
         &db,
         AuthOrBasic::Cookie(cookie),
         Some(Permissions {
-            create_users: false,
+            manage_users: false,
             upload_files: false,
             list_files: false,
             delete_files: true,
         }),
     )
-    .await
-    {
-        Ok(val) => val,
-        Err(err) => return Err(err),
-    };
+    .await?;
 
     let mut saved_name = String::new();
 

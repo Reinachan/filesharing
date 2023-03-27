@@ -1,25 +1,16 @@
 use axum::response::Html;
 use maud::{html, DOCTYPE};
 
+use crate::views::templates::{head, nav, Routes};
+
 pub async fn sign_in() -> Html<String> {
     Html(
         html! {
             (DOCTYPE)
             html {
-                head {
-                    title { "Filehost" }
-                    link rel="stylesheet" type="text/css" href="assets/styles.css";
-                    meta name="viewport" content="width=device-width, initial-scale=1.0";
-                }
+                (head("Sign in", None, None))
                 body {
-                    nav {
-                        ul {
-                            li { a href="/" { "home" }}
-                            li { a href="/upload" { "upload" }}
-                            li { a href="/files" { "files list" }}
-                            li { a class="current" href="/signin" { "sign in" }}
-                        }
-                    }
+                    (nav::<String>(Routes::SignIn, None, None))
                     h2 { "Sign In" }
                     form action="/auth" method="post" enctype="multipart/form-data" {
                         label {

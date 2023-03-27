@@ -9,7 +9,7 @@ use sqlx::{Pool, Sqlite};
 use tokio::fs::File;
 use tokio_util::io::ReaderStream;
 
-use crate::{constants::ROOT_FOLDER, db::get_file_from_db};
+use crate::{db::get_file_from_db, helpers::files_path};
 
 pub async fn download_file(
     State(db): State<Pool<Sqlite>>,
@@ -58,7 +58,7 @@ pub async fn download_file(
     } else {
     }
 
-    let file = match File::open(format!("{}/{}", ROOT_FOLDER, db_file.saved_name.clone())).await {
+    let file = match File::open(files_path(&db_file.saved_name)).await {
         Ok(res) => res,
         Err(err) => return Err((StatusCode::NOT_FOUND, format!("File not found: {}", err))),
     };

@@ -1,6 +1,7 @@
 mod constants;
 mod db;
 mod handlers;
+mod helpers;
 mod models;
 mod routes;
 mod tasks;
@@ -22,9 +23,9 @@ use std::{fs::create_dir, path, time::Duration};
 
 use crate::{
     constants::SERVER_DOMAIN,
-    routes::{auth, put_upload_file},
+    routes::{auth, create_user, delete_user, edit_user, put_upload_file},
     tasks::create_default_user,
-    views::{profile, sign_in},
+    views::{all_users, new_user, profile, sign_in},
 };
 
 #[tokio::main]
@@ -32,8 +33,8 @@ async fn main() {
     dotenvy::dotenv().expect("Couldn't find .env file");
 
     // Create files and folders
-    if !path::Path::new(ROOT_FOLDER).exists() {
-        create_dir(path::Path::new(ROOT_FOLDER)).expect("couldn't create folder 'files'");
+    if !path::Path::new(&*ROOT_FOLDER).exists() {
+        create_dir(path::Path::new(&*ROOT_FOLDER)).expect("couldn't create folder 'files'");
     }
     if !path::Path::new("db").exists() {
         create_dir(path::Path::new("db")).expect("couldn't create folder 'db'");
@@ -77,13 +78,17 @@ async fn main() {
         .route("/:file_name", get(get_file))
         .route("/delete", post(delete_file_route))
         .route("/files", get(all_files))
+        .route("/user", get(new_user).post(create_user))
+        .route("/users", get(all_users))
+        .route("/delete-user", post(delete_user))
+        .route("/edit-user", post(edit_user))
         .with_state(conn)
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024 * 20));
     //                               ^ sets max filesize to 20 GB
 
     println!("Starting server at {}", *SERVER_DOMAIN);
     // run it with hyper on localhost:3000
-    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+    axum::Server::bind(&"0.0.0.0:9800".parse().unwrap())
         .serve(app.into_make_service())
         .await
         .unwrap();
