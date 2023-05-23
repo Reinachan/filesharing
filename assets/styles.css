@@ -1,8 +1,13 @@
 /* General */
 :root {
-    background-color: black;
-    color: white;
     font-family: 'sans-serif';
+    color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        background-color: black;
+    }
 }
 
 body {
@@ -31,6 +36,16 @@ nav li a {
 
 nav li a.current {
     color: #fff;
+}
+
+@media (prefers-color-scheme: light) {
+    nav li a {
+        color: #6e6e6e;
+    }
+    
+    nav li a.current {
+        color: #000000;
+    }
 }
 
 /* Forms */
