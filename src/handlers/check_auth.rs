@@ -37,8 +37,6 @@ pub async fn check_auth(
         AuthOrBasic::Basic(value) => value,
     };
 
-    println!("{username} {password}");
-
     let user = sqlx::query_as!(
         UserDB,
         "
