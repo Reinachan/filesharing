@@ -47,10 +47,17 @@ pub async fn create_user(
                 password = hash(field_password, DEFAULT_COST).unwrap();
             }
         } else if field_name == *"terminate" {
-            terminate = Some(
-                NaiveDateTime::parse_from_str(&field.text().await.unwrap(), "%Y-%m-%dT%H:%M")
-                    .map_err(|err| (StatusCode::BAD_REQUEST, err.to_string()))?,
-            );
+            let inputted_date = &field
+                .text()
+                .await
+                .map_err(|err| (StatusCode::BAD_REQUEST, err.to_string()))?;
+
+            if !inputted_date.is_empty() {
+                terminate = Some(
+                    NaiveDateTime::parse_from_str(inputted_date, "%Y-%m-%dT%H:%M")
+                        .map_err(|err| (StatusCode::BAD_REQUEST, err.to_string()))?,
+                );
+            }
         } else if field_name == *"manage_users" {
             permissions.manage_users = true;
         } else if field_name == *"upload_files" {
