@@ -23,7 +23,6 @@ You can view the current progress towards 1.0 full release [here](https://github
 
 ## Screenshots
 
-
 <table>
 <tr>
 	<td>Homepage
@@ -90,7 +89,9 @@ services:
     volumes:
       - ./Fileshare/files:/usr/src/fileshare/files
       - ./Fileshare/db:/usr/src/fileshare/db
-    user: '1000:1000'
+      - ./Fileshare/assets:/usr/src/fileshare/assets
+      - ./Fileshare/target/release:/usr/src/fileshare/release
+    user: 1000:1000
     ports:
       - '3000:3000' # remove this if you're using Caddy/Nginx
 ```

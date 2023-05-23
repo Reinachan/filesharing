@@ -18,8 +18,7 @@ RUN mkdir assets
 RUN mkdir target
 RUN mkdir files
 RUN mkdir db
+RUN mkdir release
 COPY ../.env ./.env
-COPY ./assets ./assets
-COPY ./target/release/filesharing ./fileshare
 
-CMD ["./fileshare"]
+CMD ["./release/filesharing"]
