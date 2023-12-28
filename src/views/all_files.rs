@@ -5,11 +5,11 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     db::get_files_from_db,
     handlers::{check_auth, AuthOrBasic},
-    helpers::files_path,
     models::Permissions,
     views::templates::{head, nav, Routes},
 };
 
+// FIXME: file direct link only works if the file isn't password locked
 pub async fn all_files(
     TypedHeader(cookie): TypedHeader<Cookie>,
     State(db): State<Pool<Sqlite>>,
@@ -54,7 +54,7 @@ pub async fn all_files(
                                 }
                                 div class="content" {
                                     a
-                                        href={(files_path(file.saved_name.clone()))}
+                                        href={(file.saved_name.clone())}
                                         class="saved-name"
                                         { (file.saved_name) }
                                 }
