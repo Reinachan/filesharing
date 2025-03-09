@@ -10,6 +10,7 @@ mod views;
 use constants::ROOT_FOLDER;
 use routes::{delete_file_route, download_file, get_file, upload_file};
 use tasks::scheduled_deletion;
+use tokio::net::TcpListener;
 use tower_http::services::ServeDir;
 use views::{all_files, root, upload};
 
@@ -88,8 +89,8 @@ async fn main() {
 
     println!("Starting server at {}", *SERVER_DOMAIN);
     // run it with hyper on localhost:3000
-    axum::Server::bind(&"0.0.0.0:9800".parse().unwrap())
-        .serve(app.into_make_service())
+    let listener = TcpListener::bind("0.0.0.0:9800").await.unwrap();
+    axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
 }
