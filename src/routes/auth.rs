@@ -1,6 +1,6 @@
 use axum::{
     extract::{Multipart, State},
-    http::{header::SET_COOKIE, HeaderMap, HeaderValue, StatusCode},
+    http::{HeaderMap, HeaderValue, StatusCode, header::SET_COOKIE},
     response::Redirect,
 };
 use http_auth_basic::Credentials;
@@ -8,7 +8,7 @@ use sqlx::{Pool, Sqlite};
 
 use crate::{
     constants::AUTH_COOKIE,
-    handlers::{check_auth, AuthOrBasic},
+    handlers::{AuthOrBasic, check_auth},
 };
 
 pub async fn auth(

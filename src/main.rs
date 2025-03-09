@@ -14,9 +14,9 @@ use tower_http::services::ServeDir;
 use views::{all_files, root, upload};
 
 use axum::{
+    Router,
     extract::DefaultBodyLimit,
     routing::{get, post},
-    Router,
 };
 use sqlx::SqlitePool;
 use std::{fs::create_dir, path, time::Duration};

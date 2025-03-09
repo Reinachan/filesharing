@@ -1,16 +1,16 @@
 use axum::{
+    TypedHeader,
     extract::{Multipart, State},
     headers::Cookie,
     http::StatusCode,
     response::Redirect,
-    TypedHeader,
 };
-use bcrypt::{hash, DEFAULT_COST};
-use sqlx::{types::chrono::NaiveDateTime, Pool, Sqlite};
+use bcrypt::{DEFAULT_COST, hash};
+use sqlx::{Pool, Sqlite, types::chrono::NaiveDateTime};
 // use futures::stream::StreamExt;
 use crate::{
     db::{create_user_db, delete_user_db, edit_user_db},
-    handlers::{check_auth, AuthOrBasic},
+    handlers::{AuthOrBasic, check_auth},
     models::{Permissions, User},
 };
 

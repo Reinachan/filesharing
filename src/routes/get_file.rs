@@ -1,7 +1,7 @@
 use axum::{
     body::StreamBody,
     extract::{Path, State},
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{AppendHeaders, IntoResponse},
 };
 use sqlx::{Pool, Sqlite};
@@ -26,7 +26,7 @@ pub async fn get_file(
             return Err((
                 StatusCode::INTERNAL_SERVER_ERROR,
                 format!("File not found: {}", err),
-            ))
+            ));
         }
     };
 

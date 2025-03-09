@@ -1,7 +1,7 @@
 use axum::{
     body::StreamBody,
     extract::{Multipart, State},
-    http::{header, StatusCode},
+    http::{StatusCode, header},
     response::{AppendHeaders, IntoResponse},
 };
 use bcrypt::verify;
@@ -48,7 +48,7 @@ pub async fn download_file(
                 return Err((
                     StatusCode::INTERNAL_SERVER_ERROR,
                     format!("Error with password hash verification: {}", err),
-                ))
+                ));
             }
         };
 
