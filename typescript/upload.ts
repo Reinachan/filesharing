@@ -72,18 +72,7 @@ async function chunkUpload(file: File, fileName: string) {
 	formData.append('filename', fileName);
 	formData.append('final', 'true');
 
-	fetch('/upload', {
-		method: 'PUT',
-		body: formData,
-	})
-		.then(async function (data) {
-			if (!data.ok) throw new Error(data.statusText);
-			setOutput(await data.text());
-		})
-		.catch(function (err) {
-			console.error(err);
-			setOutput(`Error: ${err}`);
-		});
+    finish(formData);
 }
 
 async function finish(formData: FormData) {
