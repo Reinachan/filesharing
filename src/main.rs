@@ -82,7 +82,7 @@ async fn main() {
         .route("/users", get(all_users))
         .route("/delete-user", post(delete_user))
         .route("/edit-user", post(edit_user))
-        .route("/:file_name", get(get_file))
+        .route("/{file_name}", get(get_file))
         .with_state(conn)
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024 * 20));
     //                               ^ sets max filesize to 20 GB
