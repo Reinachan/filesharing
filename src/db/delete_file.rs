@@ -16,7 +16,7 @@ pub async fn delete_file(
                 return Err((
                     StatusCode::INTERNAL_SERVER_ERROR,
                     "Couldn't delete".to_owned(),
-                ))
+                ));
             }
         },
     };

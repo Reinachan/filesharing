@@ -1,15 +1,15 @@
 use axum::{
+    TypedHeader,
     extract::{Multipart, State},
     headers::Cookie,
     http::StatusCode,
     response::Redirect,
-    TypedHeader,
 };
 use sqlx::{Pool, Sqlite};
 
 use crate::{
     db::delete_file,
-    handlers::{check_auth, AuthOrBasic},
+    handlers::{AuthOrBasic, check_auth},
     models::Permissions,
 };
 

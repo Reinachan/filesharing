@@ -1,12 +1,12 @@
-use axum::{extract::State, headers::Cookie, http::StatusCode, response::Html, TypedHeader};
-use maud::{html, DOCTYPE};
+use axum::{TypedHeader, extract::State, headers::Cookie, http::StatusCode, response::Html};
+use maud::{DOCTYPE, html};
 use sqlx::{Pool, Sqlite};
 
 use crate::{
     db::get_files_from_db,
-    handlers::{check_auth, AuthOrBasic},
+    handlers::{AuthOrBasic, check_auth},
     models::Permissions,
-    views::templates::{head, nav, Routes},
+    views::templates::{Routes, head, nav},
 };
 
 // FIXME: file direct link only works if the file isn't password locked

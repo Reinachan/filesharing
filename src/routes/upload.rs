@@ -1,18 +1,18 @@
 use axum::{
+    TypedHeader,
     body::Bytes,
     extract::{Multipart, State},
     headers::Cookie,
     http::StatusCode,
-    TypedHeader,
 };
-use bcrypt::{hash, DEFAULT_COST};
+use bcrypt::{DEFAULT_COST, hash};
 use sqlx::{Pool, Sqlite};
 use tokio::fs::create_dir;
 use uuid::Uuid;
 // use futures::stream::StreamExt;
 use crate::{
     constants::SERVER_DOMAIN,
-    handlers::{check_auth, AuthOrBasic},
+    handlers::{AuthOrBasic, check_auth},
     helpers::files_path,
     models::Permissions,
 };
@@ -20,7 +20,7 @@ use crate::{
 use std::{path::Path, thread::sleep, time::Duration};
 
 use tokio::{
-    fs::{remove_dir_all, write, File, OpenOptions},
+    fs::{File, OpenOptions, remove_dir_all, write},
     io::{AsyncReadExt, AsyncWriteExt},
 };
 

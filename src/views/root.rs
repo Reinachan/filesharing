@@ -1,7 +1,7 @@
 use axum::response::Html;
-use maud::{html, DOCTYPE};
+use maud::{DOCTYPE, html};
 
-use crate::views::templates::{head, nav, Routes};
+use crate::views::templates::{Routes, head, nav};
 
 pub async fn root() -> Html<String> {
     Html(

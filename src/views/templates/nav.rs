@@ -1,4 +1,4 @@
-use maud::{html, PreEscaped, Render};
+use maud::{PreEscaped, Render, html};
 
 use crate::{constants::SERVER_NAME, models::Permissions};
 

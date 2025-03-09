@@ -1,7 +1,7 @@
 use sqlx::{Pool, Sqlite};
 use std::env::var;
 
-use bcrypt::{hash, DEFAULT_COST};
+use bcrypt::{DEFAULT_COST, hash};
 
 use crate::{
     db::create_user_db,
@@ -36,7 +36,9 @@ pub async fn create_default_user(db: Pool<Sqlite>) {
     match create_user_db(&db, user).await {
         Ok(_) => {
             println!("Default user with all permissions created");
-            panic!("Make sure you remove the DEFAULT_USERNAME and DEFAULT_PASSWORD environment variables");
+            panic!(
+                "Make sure you remove the DEFAULT_USERNAME and DEFAULT_PASSWORD environment variables"
+            );
         }
         Err(err) => panic!("{:#?}", err),
     };

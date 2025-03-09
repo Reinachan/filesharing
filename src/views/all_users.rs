@@ -1,12 +1,12 @@
-use axum::{extract::State, headers::Cookie, http::StatusCode, response::Html, TypedHeader};
-use maud::{html, PreEscaped, DOCTYPE};
+use axum::{TypedHeader, extract::State, headers::Cookie, http::StatusCode, response::Html};
+use maud::{DOCTYPE, PreEscaped, html};
 use sqlx::{Pool, Sqlite};
 
 use crate::{
     db::get_users_from_db,
-    handlers::{check_auth, AuthOrBasic},
+    handlers::{AuthOrBasic, check_auth},
     models::Permissions,
-    views::templates::{head, nav, Routes},
+    views::templates::{Routes, head, nav},
 };
 
 pub async fn all_users(
