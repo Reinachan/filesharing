@@ -10,6 +10,7 @@ mod views;
 use constants::ROOT_FOLDER;
 use routes::{delete_file_route, download_file, get_file, upload_file};
 use tasks::scheduled_deletion;
+use tokio::net::TcpListener;
 use tower_http::services::ServeDir;
 use views::{all_files, root, upload};
 
@@ -81,15 +82,15 @@ async fn main() {
         .route("/users", get(all_users))
         .route("/delete-user", post(delete_user))
         .route("/edit-user", post(edit_user))
-        .route("/:file_name", get(get_file))
+        .route("/{file_name}", get(get_file))
         .with_state(conn)
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024 * 20));
     //                               ^ sets max filesize to 20 GB
 
     println!("Starting server at {}", *SERVER_DOMAIN);
     // run it with hyper on localhost:3000
-    axum::Server::bind(&"0.0.0.0:9800".parse().unwrap())
-        .serve(app.into_make_service())
+    let listener = TcpListener::bind("0.0.0.0:9800").await.unwrap();
+    axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
 }

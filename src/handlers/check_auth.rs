@@ -1,4 +1,5 @@
-use axum::{headers::Cookie, http::StatusCode};
+use axum::http::StatusCode;
+use axum_extra::headers::Cookie;
 use bcrypt::verify;
 use http_auth_basic::Credentials;
 use lazy_static::lazy_static;

@@ -1,4 +1,5 @@
-use axum::{TypedHeader, extract::State, headers::Cookie, http::StatusCode, response::Html};
+use axum::{extract::State, http::StatusCode, response::Html};
+use axum_extra::{TypedHeader, headers::Cookie};
 use maud::{DOCTYPE, html};
 use sqlx::{Pool, Sqlite};
 

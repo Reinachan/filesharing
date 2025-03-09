@@ -1,5 +1,5 @@
 use axum::{
-    body::StreamBody,
+    body::Body,
     extract::{Path, State},
     http::{StatusCode, header},
     response::{AppendHeaders, IntoResponse},
@@ -34,7 +34,7 @@ pub async fn get_file(
 
     let headers = AppendHeaders([(header::CONTENT_TYPE, mime)]);
     let stream = ReaderStream::new(file);
-    let body = StreamBody::new(stream);
+    let body = Body::from_stream(stream);
 
     Ok((headers, body))
 }
