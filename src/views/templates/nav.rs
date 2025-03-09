@@ -27,11 +27,11 @@ pub fn nav<S: Render + AsRef<str>>(
                 @if permissions.is_some() && permissions.unwrap().manage_users {
                     (nav_item(&current, &Routes::Users, "/users", "users"))
                 }
-                @if let Some(username) = username {
+                @match username { Some(username) => {
                     (nav_item(&current, &Routes::Profile, "/profile", username))
-                } @else {
+                } _ => {
                     (nav_item(&current, &Routes::SignIn, "/signin", "signin"))
-                }
+                }}
             }
         }
     }
