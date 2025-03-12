@@ -23,3 +23,9 @@ pub struct UserWithoutPassword {
     pub terminate: Option<NaiveDateTime>,
     pub permissions: Permissions,
 }
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct UsernamePassword {
+    pub username: String,
+    pub password: String,
+}

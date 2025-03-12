@@ -4,4 +4,4 @@ mod user;
 
 pub use file::FileDB;
 pub use permissions::{Permissions, PermissionsDB};
-pub use user::{User, UserDB, UserWithoutPassword};
+pub use user::{User, UserDB, UserWithoutPassword, UsernamePassword};
