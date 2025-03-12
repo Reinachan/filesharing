@@ -2,7 +2,10 @@ use axum::{Extension, Json, extract::State, http::StatusCode, response::IntoResp
 use bcrypt::{DEFAULT_COST, hash};
 use sqlx::{Pool, Sqlite};
 
-use crate::{db::create_user_db, models::User};
+use crate::{
+    db::create_user_db,
+    models::{User, UserWithoutPassword},
+};
 
 pub async fn create_user(
     State(db): State<Pool<Sqlite>>,
@@ -20,11 +23,17 @@ pub async fn create_user(
     create_user_db(
         &db,
         User {
-            username: new_user.username,
+            username: new_user.username.clone(),
             password: hash(new_user.password, DEFAULT_COST).unwrap(),
             terminate: new_user.terminate,
             permissions: new_user.permissions,
         },
     )
-    .await
+    .await?;
+
+    Ok(Json(UserWithoutPassword {
+        username: new_user.username,
+        terminate: new_user.terminate,
+        permissions: new_user.permissions,
+    }))
 }
