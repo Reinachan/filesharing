@@ -1,3 +1,5 @@
+mod api;
+mod auth;
 mod constants;
 mod db;
 mod handlers;
@@ -17,12 +19,15 @@ use views::{all_files, root, upload};
 use axum::{
     Router,
     extract::DefaultBodyLimit,
+    middleware,
     routing::{get, post},
 };
 use sqlx::SqlitePool;
 use std::{fs::create_dir, path, time::Duration};
 
 use crate::{
+    api::api_get_users,
+    auth::{authorization_middleware, request_token},
     constants::SERVER_DOMAIN,
     routes::{auth, create_user, delete_user, edit_user, put_upload_file},
     tasks::create_default_user,
@@ -65,8 +70,7 @@ async fn main() {
         }
     });
 
-    // Set up routes
-    let app = Router::new()
+    let views_routes = Router::new()
         .route("/", get(root).post(download_file))
         .route("/signin", get(sign_in))
         .route("/auth", post(auth))
@@ -82,7 +86,20 @@ async fn main() {
         .route("/users", get(all_users))
         .route("/delete-user", post(delete_user))
         .route("/edit-user", post(edit_user))
-        .route("/{file_name}", get(get_file))
+        .route("/{file_name}", get(get_file));
+
+    let api_routes = Router::new().route("/token", post(request_token)).route(
+        "/users",
+        get(api_get_users).layer(middleware::from_fn_with_state(
+            conn.clone(),
+            authorization_middleware,
+        )),
+    );
+
+    // Set up routes
+    let app = Router::new()
+        .merge(views_routes)
+        .nest("/api", api_routes)
         .with_state(conn)
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024 * 20));
     //                               ^ sets max filesize to 20 GB
