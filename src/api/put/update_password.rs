@@ -1,4 +1,5 @@
 use axum::{Extension, Json, extract::State, http::StatusCode, response::IntoResponse};
+use bcrypt::{DEFAULT_COST, hash};
 use sqlx::{Pool, Sqlite};
 
 use crate::{
@@ -19,5 +20,12 @@ pub async fn update_password(
         ));
     }
 
-    edit_user_password(&db, req_user).await
+    edit_user_password(
+        &db,
+        UsernamePassword {
+            username: req_user.username,
+            password: hash(req_user.password, DEFAULT_COST).unwrap(),
+        },
+    )
+    .await
 }

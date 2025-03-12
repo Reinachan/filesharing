@@ -1,4 +1,5 @@
 use axum::{Extension, Json, extract::State, http::StatusCode, response::IntoResponse};
+use bcrypt::{DEFAULT_COST, hash};
 use sqlx::{Pool, Sqlite};
 
 use crate::{db::create_user_db, models::User};
@@ -16,5 +17,14 @@ pub async fn create_user(
         ));
     }
 
-    create_user_db(&db, new_user).await
+    create_user_db(
+        &db,
+        User {
+            username: new_user.username,
+            password: hash(new_user.password, DEFAULT_COST).unwrap(),
+            terminate: new_user.terminate,
+            permissions: new_user.permissions,
+        },
+    )
+    .await
 }
