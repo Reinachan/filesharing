@@ -12,7 +12,7 @@ struct GetUsersResponse {
     users: Vec<UserWithoutPassword>,
 }
 
-pub async fn api_get_users(
+pub async fn users(
     State(db): State<Pool<Sqlite>>,
     Extension(user): Extension<User>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
