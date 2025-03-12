@@ -38,5 +38,5 @@ pub async fn edit_user_permissions(
         )
     })?;
 
-    Ok((StatusCode::OK, "Updated password".to_owned()))
+    Ok((StatusCode::OK, "Updated user permissions".to_owned()))
 }
