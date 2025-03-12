@@ -91,6 +91,7 @@ async fn main() {
     let api_routes = Router::new()
         .route("/profile", get(get::profile))
         .route("/users", get(get::users))
+        .route("/admin/files", get(get::admin_files))
         .layer(middleware::from_fn_with_state(
             conn.clone(),
             authorization_middleware,
