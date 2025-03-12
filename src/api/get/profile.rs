@@ -12,7 +12,7 @@ struct GetCurrentUserResponse {
     user: UserWithoutPassword,
 }
 
-pub async fn current_user(
+pub async fn profile(
     State(db): State<Pool<Sqlite>>,
     Extension(user): Extension<User>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {

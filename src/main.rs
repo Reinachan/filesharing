@@ -89,7 +89,7 @@ async fn main() {
         .route("/{file_name}", get(get_file));
 
     let api_routes = Router::new()
-        .route("/user", get(get::current_user))
+        .route("/profile", get(get::profile))
         .route("/users", get(get::users))
         .layer(middleware::from_fn_with_state(
             conn.clone(),

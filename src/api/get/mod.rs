@@ -1,5 +1,5 @@
-mod current_user;
+mod profile;
 mod users;
 
-pub use current_user::current_user;
+pub use profile::profile;
 pub use users::users;
