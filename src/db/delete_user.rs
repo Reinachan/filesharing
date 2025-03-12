@@ -5,7 +5,7 @@ pub async fn delete_user_db(
     db: &Pool<Sqlite>,
     username: String,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
-    match sqlx::query!(
+    let query = sqlx::query!(
         "
         BEGIN TRANSACTION;
         DELETE FROM permissions WHERE username = ?;
@@ -17,11 +17,18 @@ pub async fn delete_user_db(
     )
     .execute(db)
     .await
-    {
-        Ok(_) => Ok((StatusCode::OK, format!("Deleted user: {}", username))),
-        Err(_) => Err((
+    .map_err(|_| {
+        (
             StatusCode::INTERNAL_SERVER_ERROR,
             "Couldn't remove from database".to_owned(),
-        )),
+        )
+    })?;
+
+    // FIXME: This method seems a little inconsistent at figuring out if the entry was updated
+    //        look into a better way of returning an error if a user doesn't exist
+    if query.rows_affected() <= 1 {
+        return Err((StatusCode::NOT_FOUND, "User does not exist".to_owned()));
     }
+
+    Ok((StatusCode::OK, format!("Deleted user: {}", username)))
 }
