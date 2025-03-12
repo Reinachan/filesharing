@@ -20,13 +20,13 @@ use axum::{
     Router,
     extract::DefaultBodyLimit,
     middleware,
-    routing::{delete, get, post, put},
+    routing::{get, post, put},
 };
 use sqlx::SqlitePool;
 use std::{fs::create_dir, path, time::Duration};
 
 use crate::{
-    api::{delete, get, put},
+    api::{delete, get, post, put},
     auth::{authorization_middleware, request_token},
     constants::SERVER_DOMAIN,
     routes::{auth, create_user, delete_user, edit_user, put_upload_file},
@@ -90,7 +90,7 @@ async fn main() {
 
     let api_routes = Router::new()
         .route("/profile", get(get::profile))
-        .route("/user", delete(delete::user))
+        .route("/user", post(post::create_user).delete(delete::user))
         .route("/user/password", put(put::update_password))
         .route("/users", get(get::users))
         .route(
