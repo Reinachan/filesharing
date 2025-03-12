@@ -90,10 +90,8 @@ async fn main() {
 
     let api_routes = Router::new()
         .route("/profile", get(get::profile))
-        .route(
-            "/user",
-            get(get::user).post(post::create_user).delete(delete::user),
-        )
+        .route("/user", post(post::create_user))
+        .route("/user/{username}", get(get::user).delete(delete::user))
         .route("/user/permissions", put(put::update_user_permissions))
         .route("/user/password", put(put::update_password))
         .route("/users", get(get::users))
