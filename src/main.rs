@@ -26,7 +26,7 @@ use sqlx::SqlitePool;
 use std::{fs::create_dir, path, time::Duration};
 
 use crate::{
-    api::get,
+    api::{delete, get},
     auth::{authorization_middleware, request_token},
     constants::SERVER_DOMAIN,
     routes::{auth, create_user, delete_user, edit_user, put_upload_file},
@@ -91,7 +91,10 @@ async fn main() {
     let api_routes = Router::new()
         .route("/profile", get(get::profile))
         .route("/users", get(get::users))
-        .route("/admin/files", get(get::admin_files))
+        .route(
+            "/admin/files",
+            get(get::admin_files).delete(delete::admin_files),
+        )
         .layer(middleware::from_fn_with_state(
             conn.clone(),
             authorization_middleware,
