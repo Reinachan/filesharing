@@ -1,26 +1,31 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-pub async fn delete_user_db(
+use crate::models::UsernamePassword;
+
+pub async fn edit_user_password(
     db: &Pool<Sqlite>,
-    username: String,
+    user: UsernamePassword,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
     let query = sqlx::query!(
         "
         BEGIN TRANSACTION;
-        DELETE FROM permissions WHERE username = ?;
-        DELETE FROM users WHERE username = ?;
+        
+        UPDATE users 
+        SET password = ?
+        WHERE username = ?;
+        
         COMMIT;
         ",
-        username,
-        username
+        user.password,
+        user.username,
     )
     .execute(db)
     .await
     .map_err(|_| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            "Couldn't remove from database".to_owned(),
+            "Couldn't edit user".to_owned(),
         )
     })?;
 
@@ -30,5 +35,5 @@ pub async fn delete_user_db(
         return Err((StatusCode::NOT_FOUND, "User does not exist".to_owned()));
     }
 
-    Ok((StatusCode::OK, format!("Deleted user: {}", username)))
+    Ok((StatusCode::OK, "Updated password".to_owned()))
 }

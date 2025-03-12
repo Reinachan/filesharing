@@ -12,7 +12,7 @@ pub struct PermissionsDB {
     pub delete_files: bool,
 }
 
-#[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[derive(Debug, Clone, Copy, Default, Deserialize, Serialize)]
 pub struct Permissions {
     pub manage_users: bool,
     pub upload_files: bool,

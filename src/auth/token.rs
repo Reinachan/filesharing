@@ -176,7 +176,17 @@ pub async fn authorization_middleware(
 
     let (_bearer, token) = (header.next(), header.next());
 
-    let token_data = match decode_jwt(token.unwrap().to_string()) {
+    let token = match token {
+        Some(token) => token,
+        None => {
+            return Err((
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Token cannot be parsed".to_string(),
+            ));
+        }
+    };
+
+    let token_data = match decode_jwt(token.to_string()) {
         Ok(data) => data,
         Err(_) => {
             return Err((
