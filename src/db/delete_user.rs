@@ -18,7 +18,7 @@ pub async fn delete_user_db(
     .execute(db)
     .await
     {
-        Ok(_) => Ok((StatusCode::OK, "Deleted user".to_owned())),
+        Ok(_) => Ok((StatusCode::OK, format!("Deleted user: {}", username))),
         Err(_) => Err((
             StatusCode::INTERNAL_SERVER_ERROR,
             "Couldn't remove from database".to_owned(),
