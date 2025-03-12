@@ -19,5 +19,7 @@ pub async fn update_user_permissions(
         ));
     }
 
-    edit_user_permissions(&db, req_user).await
+    edit_user_permissions(&db, &req_user).await?;
+
+    Ok(Json(req_user))
 }

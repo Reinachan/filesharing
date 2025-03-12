@@ -5,7 +5,7 @@ use crate::models::UserWithoutPassword;
 
 pub async fn edit_user_permissions(
     db: &Pool<Sqlite>,
-    user: UserWithoutPassword,
+    user: &UserWithoutPassword,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
     sqlx::query!(
         "
