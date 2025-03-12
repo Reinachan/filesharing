@@ -20,7 +20,7 @@ use axum::{
     Router,
     extract::DefaultBodyLimit,
     middleware,
-    routing::{get, post},
+    routing::{delete, get, post},
 };
 use sqlx::SqlitePool;
 use std::{fs::create_dir, path, time::Duration};
@@ -90,6 +90,7 @@ async fn main() {
 
     let api_routes = Router::new()
         .route("/profile", get(get::profile))
+        .route("/user", delete(delete::user))
         .route("/users", get(get::users))
         .route(
             "/admin/files",
