@@ -21,7 +21,6 @@ pub async fn user(
             "You don't have the permissions to delete other users".to_string(),
         ));
     }
-    delete_user_db(&db, user_to_delete.username).await?;
 
-    Ok(StatusCode::NO_CONTENT)
+    delete_user_db(&db, user_to_delete.username).await
 }
