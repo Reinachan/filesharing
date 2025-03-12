@@ -12,7 +12,7 @@ pub async fn create_user(
     if !user.permissions.manage_users {
         return Err((
             StatusCode::FORBIDDEN,
-            "You don't have the permissions to change the password of other users".to_string(),
+            "You don't have the permissions to create a user".to_string(),
         ));
     }
 
