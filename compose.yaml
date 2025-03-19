@@ -1,0 +1,14 @@
+services:
+  filehost:
+    container_name: fileshare
+    build: ./
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./files:/usr/fileshare/files
+      - ./db:/usr/fileshare/db
+      - ./assets:/usr/fileshare/assets
+    user: 1000:1000
+    ports:
+      - 9800:9800
