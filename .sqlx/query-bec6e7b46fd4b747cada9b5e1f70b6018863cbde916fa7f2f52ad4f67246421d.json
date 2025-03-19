@@ -1,0 +1,32 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT * FROM users WHERE username = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "username",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "password",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "terminate",
+        "ordinal": 2,
+        "type_info": "Datetime"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "bec6e7b46fd4b747cada9b5e1f70b6018863cbde916fa7f2f52ad4f67246421d"
+}

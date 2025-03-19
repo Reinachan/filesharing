@@ -1,0 +1,44 @@
+{
+  "db_name": "SQLite",
+  "query": "\n    SELECT * FROM files WHERE saved_name=?\n    ",
+  "describe": {
+    "columns": [
+      {
+        "name": "saved_name",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_type",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "password",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "destroy",
+        "ordinal": 4,
+        "type_info": "Datetime"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "0c947db1818e7e5231c3056ceb13c210f849ed43ba3d96eda55a8a05e5c7cf72"
+}

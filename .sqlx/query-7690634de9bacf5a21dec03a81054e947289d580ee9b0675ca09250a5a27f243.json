@@ -1,0 +1,44 @@
+{
+  "db_name": "SQLite",
+  "query": "\n    SELECT * FROM files\n    WHERE destroy < ? \n    ",
+  "describe": {
+    "columns": [
+      {
+        "name": "saved_name",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_type",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "password",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "destroy",
+        "ordinal": 4,
+        "type_info": "Datetime"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "7690634de9bacf5a21dec03a81054e947289d580ee9b0675ca09250a5a27f243"
+}

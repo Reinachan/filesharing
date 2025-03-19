@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        BEGIN TRANSACTION;\n        INSERT INTO users (username, password, terminate) values (?, ?, ?);\n        INSERT INTO permissions (username, manage_users, upload_files, list_files, delete_files) values (?, ?, ?, ?, ?);\n        COMMIT;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 8
+    },
+    "nullable": []
+  },
+  "hash": "008d7a485f02bc83c7bf7946e0f5d13740802d09b760d4875c993223cd662e95"
+}

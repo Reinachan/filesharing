@@ -1,0 +1,44 @@
+{
+  "db_name": "SQLite",
+  "query": "\n    SELECT * FROM files\n    ",
+  "describe": {
+    "columns": [
+      {
+        "name": "saved_name",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_type",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "password",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "destroy",
+        "ordinal": 4,
+        "type_info": "Datetime"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "bf5d690dfc9a33b4ce73408a71c7e05610a04de161d81e3769db9b4b1ad2c8f1"
+}

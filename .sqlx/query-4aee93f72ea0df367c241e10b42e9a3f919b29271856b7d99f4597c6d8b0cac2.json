@@ -1,0 +1,44 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        SELECT * FROM permissions WHERE username = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "username",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "manage_users",
+        "ordinal": 1,
+        "type_info": "Bool"
+      },
+      {
+        "name": "upload_files",
+        "ordinal": 2,
+        "type_info": "Bool"
+      },
+      {
+        "name": "list_files",
+        "ordinal": 3,
+        "type_info": "Bool"
+      },
+      {
+        "name": "delete_files",
+        "ordinal": 4,
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "4aee93f72ea0df367c241e10b42e9a3f919b29271856b7d99f4597c6d8b0cac2"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n            UPDATE files \n            SET password = ?\n            WHERE saved_name = ?\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "ad2ed9efcf28c5ee8c6c6fb699ad64387c29e1e45348374253e8f6d63b58f439"
+}

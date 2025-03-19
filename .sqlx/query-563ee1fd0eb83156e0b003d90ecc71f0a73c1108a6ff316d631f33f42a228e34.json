@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        BEGIN TRANSACTION;\n        \n        UPDATE users\n        SET terminate = ?\n        WHERE username = ?;\n        \n        UPDATE permissions\n        SET manage_users = ?, upload_files = ?, list_files = ?, delete_files = ?\n        WHERE username = ?;\n        \n        COMMIT;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 7
+    },
+    "nullable": []
+  },
+  "hash": "563ee1fd0eb83156e0b003d90ecc71f0a73c1108a6ff316d631f33f42a228e34"
+}

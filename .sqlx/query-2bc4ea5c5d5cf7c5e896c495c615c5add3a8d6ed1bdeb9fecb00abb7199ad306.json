@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n            UPDATE files \n            SET destroy = ?\n            WHERE saved_name = ?\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "2bc4ea5c5d5cf7c5e896c495c615c5add3a8d6ed1bdeb9fecb00abb7199ad306"
+}
