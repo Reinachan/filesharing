@@ -53,6 +53,9 @@ async fn main() {
         .await
         .expect("No DB Pool");
 
+    // Run migrations
+    sqlx::migrate!("./migrations").run(&conn).await.unwrap();
+
     create_default_user(conn.clone()).await;
 
     tokio::spawn(async {
