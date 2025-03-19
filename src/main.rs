@@ -9,7 +9,7 @@ mod routes;
 mod tasks;
 mod views;
 
-use constants::ROOT_FOLDER;
+use constants::{ROOT_FOLDER, SERVER_DOMAIN, SERVER_PORT};
 use routes::{delete_file_route, download_file, get_file, upload_file};
 use tasks::scheduled_deletion;
 use tokio::net::TcpListener;
@@ -28,7 +28,6 @@ use std::{fs::create_dir, path, time::Duration};
 use crate::{
     api::{delete, get, post, put},
     auth::{authorization_middleware, request_token},
-    constants::SERVER_DOMAIN,
     routes::{auth, create_user, delete_user, edit_user, put_upload_file},
     tasks::create_default_user,
     views::{all_users, new_user, profile, sign_in},
@@ -113,9 +112,12 @@ async fn main() {
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024 * 20));
     //                               ^ sets max filesize to 20 GB
 
-    println!("Starting server at {}", *SERVER_DOMAIN);
-    // run it with hyper on localhost:3000
-    let listener = TcpListener::bind("0.0.0.0:9800").await.unwrap();
+    println!("Server domain is set to {}", *SERVER_DOMAIN);
+    println!("Starting server at http://localhost:{}", *SERVER_PORT);
+
+    let listener = TcpListener::bind(format!("0.0.0.0:{}", *SERVER_PORT))
+        .await
+        .unwrap();
     axum::serve(listener, app.into_make_service())
         .await
         .unwrap();
