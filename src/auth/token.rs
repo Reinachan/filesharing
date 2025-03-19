@@ -96,7 +96,8 @@ async fn retrieve_user_by_username(username: &str, db: &Pool<Sqlite>) -> Result<
 }
 
 pub fn encode_jwt(username: String) -> Result<String, StatusCode> {
-    let secret = env!("JWT_TOKEN_SECRET");
+    let secret = std::env::var("JWT_TOKEN_SECRET")
+        .expect("You need to configure a JWT_TOKEN_SECRET env var");
 
     let now = Utc::now();
 
@@ -117,7 +118,9 @@ pub fn encode_jwt(username: String) -> Result<String, StatusCode> {
 }
 
 pub fn decode_jwt(jwt_token: String) -> Result<TokenData<Claims>, StatusCode> {
-    let secret = env!("JWT_TOKEN_SECRET");
+    let secret = std::env::var("JWT_TOKEN_SECRET")
+        .expect("You need to configure a JWT_TOKEN_SECRET env var");
+
     let result: Result<TokenData<Claims>, StatusCode> = decode(
         &jwt_token,
         &DecodingKey::from_secret(secret.as_ref()),
