@@ -24,7 +24,7 @@ pub async fn users(
                 .map(|u| UserWithoutPassword {
                     username: u.username.clone(),
                     terminate: u.terminate,
-                    permissions: u.permissions.clone(),
+                    permissions: u.permissions,
                 })
                 .collect();
             Ok(Json(GetUsersResponse { users }))

@@ -55,7 +55,6 @@ pub async fn download_file(
         if !verified {
             return Err((StatusCode::NOT_FOUND, "File not found".to_owned()));
         }
-    } else {
     }
 
     let file = match File::open(files_path(&db_file.saved_name)).await {
