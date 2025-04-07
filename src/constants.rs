@@ -10,4 +10,7 @@ lazy_static! {
         var("SERVER_DOMAIN").unwrap_or(format!("http://localhost:{}", *SERVER_PORT));
     pub static ref SERVER_NAME: String = var("SERVER_NAME").unwrap_or("Filehost".to_string());
     pub static ref ROOT_FOLDER: String = var("ROOT_FOLDER").unwrap_or("files".to_string());
+    static ref FEATURES_STRING: String = var("FEATURES").unwrap_or("".to_string());
+    pub static ref FEATURES: Vec<&'static str> =
+        FEATURES_STRING.split_whitespace().collect::<Vec<&str>>();
 }

@@ -9,7 +9,7 @@ mod routes;
 mod tasks;
 mod views;
 
-use constants::{ROOT_FOLDER, SERVER_DOMAIN, SERVER_PORT};
+use constants::{FEATURES, ROOT_FOLDER, SERVER_DOMAIN, SERVER_PORT};
 use routes::{delete_file_route, download_file, get_file, upload_file};
 use tasks::scheduled_deletion;
 use tokio::net::TcpListener;
@@ -108,8 +108,18 @@ async fn main() {
         .route("/token", post(request_token));
 
     // Set up routes
-    let app = Router::new()
-        .merge(views_routes)
+    let mut app = Router::new();
+
+    // handle custom client
+    if FEATURES.contains(&"custom_client") {
+        if !FEATURES.contains(&"disable_default_client") {
+            app = app.nest("/legacy", views_routes);
+        }
+    } else {
+        app = app.merge(views_routes);
+    }
+
+    let app = app
         .nest("/api", api_routes)
         .with_state(conn)
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024 * 20));
