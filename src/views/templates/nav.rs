@@ -1,6 +1,6 @@
 use maud::{PreEscaped, Render, html};
 
-use crate::{constants::SERVER_NAME, models::Permissions};
+use crate::{constants::SERVER_NAME, helpers::link_path, models::Permissions};
 
 #[derive(Debug, PartialEq)]
 pub enum Routes {
@@ -21,16 +21,16 @@ pub fn nav<S: Render + AsRef<str>>(
         nav {
             h1 { (*SERVER_NAME) }
             ul {
-                (nav_item(&current, &Routes::Root, "/", "home"))
-                (nav_item(&current, &Routes::Upload, "/upload", "upload"))
-                (nav_item(&current, &Routes::Files, "/files", "files"))
+                (nav_item(&current, &Routes::Root, &link_path("/"), "home"))
+                (nav_item(&current, &Routes::Upload, &link_path("/upload"), "upload"))
+                (nav_item(&current, &Routes::Files, &link_path("/files"), "files"))
                 @if permissions.is_some() && permissions.unwrap().manage_users {
-                    (nav_item(&current, &Routes::Users, "/users", "users"))
+                    (nav_item(&current, &Routes::Users, &link_path("/users"), "users"))
                 }
                 @match username { Some(username) => {
-                    (nav_item(&current, &Routes::Profile, "/profile", username))
+                    (nav_item(&current, &Routes::Profile, &link_path("/profile"), username))
                 } _ => {
-                    (nav_item(&current, &Routes::SignIn, "/signin", "signin"))
+                    (nav_item(&current, &Routes::SignIn, &link_path("/signin"), "signin"))
                 }}
             }
         }

@@ -9,6 +9,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     db::delete_file,
     handlers::{AuthOrBasic, check_auth},
+    helpers::link_path,
     models::Permissions,
 };
 
@@ -42,8 +43,8 @@ pub async fn delete_file_route(
     let deletion = delete_file(&db, saved_name).await?;
 
     if deletion.0 == StatusCode::OK {
-        return Ok(Redirect::to("/files"));
+        return Ok(Redirect::to(&link_path("/files")));
     };
 
-    Ok(Redirect::to("/files"))
+    Ok(Redirect::to(&link_path("/files")))
 }

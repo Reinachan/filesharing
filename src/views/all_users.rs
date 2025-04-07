@@ -6,6 +6,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     db::get_users_from_db,
     handlers::{AuthOrBasic, check_auth},
+    helpers::link_path,
     models::Permissions,
     views::templates::{Routes, head, nav},
 };
@@ -44,7 +45,7 @@ pub async fn all_users(
                                     form {
                                         button
                                             formenctype="multipart/form-data"
-                                            formaction="/delete-user"
+                                            formaction=(link_path("/delete-user"))
                                             value=(user.username)
                                             formmethod="post"
                                             name="username"
@@ -53,7 +54,7 @@ pub async fn all_users(
                                     }
                                     h3 { (user.username) }
                                 }
-                                form class="content" enctype="multipart/form-data" action="/edit-user" method="post" {
+                                form class="content" enctype="multipart/form-data" action=(link_path("/edit-user")) method="post" {
                                     input name="username" value=(user.username) type="hidden";
                                     @if let Some(terminate) = user.terminate {
                                         input name="terminate" value=(terminate.format("%Y-%m-%dT%H:%M:%S").to_string()) type="hidden";

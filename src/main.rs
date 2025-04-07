@@ -75,12 +75,8 @@ async fn main() {
     let views_routes = Router::new()
         .route("/", get(root).post(download_file))
         .route("/signin", get(sign_in))
-        .route("/auth", post(auth))
         .nest_service("/assets", ServeDir::new("assets"))
-        .route(
-            "/upload",
-            get(upload).post(upload_file).put(put_upload_file),
-        )
+        .route("/upload", get(upload))
         .route("/profile", get(profile))
         .route("/delete", post(delete_file_route))
         .route("/files", get(all_files))
@@ -121,6 +117,8 @@ async fn main() {
 
     let app = app
         .nest("/api", api_routes)
+        .route("/auth", post(auth))
+        .route("/upload", post(upload_file).put(put_upload_file))
         .with_state(conn)
         .layer(DefaultBodyLimit::max(1024 * 1024 * 1024 * 20));
     //                               ^ sets max filesize to 20 GB

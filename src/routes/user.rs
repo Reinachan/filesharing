@@ -10,6 +10,7 @@ use sqlx::{Pool, Sqlite, types::chrono::NaiveDateTime};
 use crate::{
     db::{create_user_db, delete_user_db, edit_user_db},
     handlers::{AuthOrBasic, check_auth},
+    helpers::link_path,
     models::{Permissions, User},
 };
 
@@ -79,7 +80,7 @@ pub async fn create_user(
     )
     .await?;
 
-    Ok(Redirect::to("/users"))
+    Ok(Redirect::to(&link_path("/users")))
 }
 
 pub async fn delete_user(
@@ -111,7 +112,7 @@ pub async fn delete_user(
 
     delete_user_db(&db, username).await?;
 
-    Ok(Redirect::to("/users"))
+    Ok(Redirect::to(&link_path("/users")))
 }
 
 pub async fn edit_user(
@@ -173,5 +174,5 @@ pub async fn edit_user(
     )
     .await?;
 
-    Ok(Redirect::to("/users"))
+    Ok(Redirect::to(&link_path("/users")))
 }

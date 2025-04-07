@@ -9,6 +9,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     constants::AUTH_COOKIE,
     handlers::{AuthOrBasic, check_auth},
+    helpers::link_path,
 };
 
 pub async fn auth(
@@ -44,5 +45,5 @@ pub async fn auth(
             .unwrap(),
     );
 
-    Ok((headers, Redirect::to("/upload")))
+    Ok((headers, Redirect::to(&link_path("/upload"))))
 }

@@ -5,6 +5,7 @@ use sqlx::{Pool, Sqlite};
 
 use crate::{
     handlers::{AuthOrBasic, check_auth},
+    helpers::link_path,
     models::Permissions,
     views::templates::{Routes, head, nav},
 };
@@ -40,7 +41,7 @@ pub async fn new_user(
                 body {
                     (nav(Routes::Users, Some(&user.username), Some(user.permissions)))
                     h2 { "New User" }
-                    form action="/user" method="post" enctype="multipart/form-data" {
+                    form action=(link_path("/user")) method="post" enctype="multipart/form-data" {
                         label {
                             "Username"
                             input type="text" name="username" required;
