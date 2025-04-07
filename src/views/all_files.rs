@@ -6,6 +6,7 @@ use sqlx::{Pool, Sqlite};
 use crate::{
     db::get_files_from_db,
     handlers::{AuthOrBasic, check_auth},
+    helpers::link_path,
     models::Permissions,
     views::templates::{Routes, head, nav},
 };
@@ -44,7 +45,7 @@ pub async fn all_files(
                                     form {
                                         button
                                             formenctype="multipart/form-data"
-                                            formaction="/delete"
+                                            formaction=(link_path("/delete"))
                                             value=(file.saved_name)
                                             formmethod="post"
                                             name="delete"
