@@ -43,7 +43,13 @@ pub struct UserPermissions {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct UsernamePassword {
+pub struct UserIdPassword {
     pub id: i64,
     pub password: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct UserNameID {
+    pub id: i64,
+    pub username: String,
 }

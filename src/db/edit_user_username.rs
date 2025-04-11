@@ -1,23 +1,23 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-use crate::models::UserIdPassword;
+use crate::models::UserNameID;
 
-pub async fn edit_user_password(
+pub async fn edit_user_username(
     db: &Pool<Sqlite>,
-    user: UserIdPassword,
+    user: UserNameID,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
     let query = sqlx::query!(
         "
         BEGIN TRANSACTION;
         
-        UPDATE users 
-        SET password = ?
+        UPDATE users
+        SET username = ?
         WHERE id = ?;
         
         COMMIT;
         ",
-        user.password,
+        user.username,
         user.id,
     )
     .execute(db)
@@ -25,7 +25,7 @@ pub async fn edit_user_password(
     .map_err(|_| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            "Couldn't edit user".to_owned(),
+            "Couldn't edit user. The username may be taken".to_owned(),
         )
     })?;
 
@@ -35,5 +35,5 @@ pub async fn edit_user_password(
         return Err((StatusCode::NOT_FOUND, "User does not exist".to_owned()));
     }
 
-    Ok((StatusCode::OK, "Updated password".to_owned()))
+    Ok((StatusCode::OK, "Updated uesrname".to_owned()))
 }

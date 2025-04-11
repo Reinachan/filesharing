@@ -11,14 +11,14 @@ use jsonwebtoken::{DecodingKey, EncodingKey, Header, TokenData, Validation, deco
 use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Sqlite};
 
-use crate::db::get_user_by_username;
+use crate::db::{get_user_by_username, get_user_from_db};
 
 // Define a structure for holding claims data used in JWT tokens
 #[derive(Serialize, Deserialize)]
 pub struct Claims {
-    pub exp: usize,       // Expiry time of the token
-    pub iat: usize,       // Issued at time of the token
-    pub username: String, // Username associated with the token
+    pub exp: usize, // Expiry time of the token
+    pub iat: usize, // Issued at time of the token
+    pub id: i64,    // User ID associated with the token
 }
 
 #[derive(Deserialize)]
@@ -47,12 +47,12 @@ pub async fn request_token(
         return Err(StatusCode::UNAUTHORIZED);
     }
 
-    let token = encode_jwt(user.username).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let token = encode_jwt(user.id).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     Ok(Json(TokenResponse { token }))
 }
 
-pub fn encode_jwt(username: String) -> Result<String, StatusCode> {
+pub fn encode_jwt(id: i64) -> Result<String, StatusCode> {
     let secret = std::env::var("JWT_TOKEN_SECRET")
         .expect("You need to configure a JWT_TOKEN_SECRET env var");
 
@@ -64,7 +64,7 @@ pub fn encode_jwt(username: String) -> Result<String, StatusCode> {
     let exp: usize = (now + expire).timestamp() as usize;
     let iat: usize = now.timestamp() as usize;
 
-    let claim = Claims { iat, exp, username };
+    let claim = Claims { iat, exp, id };
 
     encode(
         &Header::default(),
@@ -156,7 +156,7 @@ pub async fn authorization_middleware(
         }
     };
 
-    let user = get_user_by_username(&token_data.claims.username, &db)
+    let user = get_user_from_db(token_data.claims.id, &db)
         .await
         .map_err(|_| {
             (
