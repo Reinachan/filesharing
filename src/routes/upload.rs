@@ -28,7 +28,7 @@ pub async fn upload_file(
     State(db): State<Pool<Sqlite>>,
     mut multipart: Multipart,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
-    let _user = check_auth(
+    let user = check_auth(
         &db,
         AuthOrBasic::Cookie(cookie),
         Some(Permissions {
@@ -98,11 +98,12 @@ pub async fn upload_file(
 
     sqlx::query!(
         "
-        INSERT INTO files (saved_name, file_name, file_type) values (?, ?, ?)
+        INSERT INTO files (saved_name, file_name, file_type, user_id) values (?, ?, ?, ?)
         ",
         saved_name,
         name,
         data_type,
+        user.id
     )
     .execute(&db)
     .await
@@ -165,6 +166,7 @@ pub async fn upload_file(
 }
 
 pub async fn put_upload_file(
+    State(db): State<Pool<Sqlite>>,
     mut multipart: Multipart,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
     let mut filename = String::new();
@@ -202,6 +204,24 @@ pub async fn put_upload_file(
         println!("finished");
         sleep(Duration::from_secs(1));
         concatenate_files(name, filename.clone()).await?;
+
+        sqlx::query!(
+            "
+            UPDATE files 
+            SET created_at = current_timestamp
+            WHERE saved_name = ?
+            ",
+            filename,
+        )
+        .execute(&db)
+        .await
+        .map_err(|_| {
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                "Couldn't save".to_owned(),
+            )
+        })?;
+
         return Ok((StatusCode::OK, format!("{}/{}", *SERVER_DOMAIN, filename)));
     }
 
