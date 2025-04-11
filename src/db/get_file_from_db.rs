@@ -1,17 +1,20 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-use crate::models::FileDB;
+use crate::models::File;
 
 pub async fn get_file_from_db(
     db: Pool<Sqlite>,
     file_name: String,
-) -> Result<FileDB, (StatusCode, String)> {
+) -> Result<File, (StatusCode, String)> {
     let file = match sqlx::query_as!(
-        FileDB,
+        File,
         "
-    SELECT * FROM files WHERE saved_name=?
-    ",
+        select saved_name, file_name, file_type, files.password, destroy, user_id, username, created_at
+        from files
+        inner join users on files.user_id = users.id
+        where saved_name=?
+        ",
         file_name
     )
     .fetch_one(&db)

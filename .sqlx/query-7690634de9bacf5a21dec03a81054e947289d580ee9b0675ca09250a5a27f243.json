@@ -27,6 +27,16 @@
         "name": "destroy",
         "ordinal": 4,
         "type_info": "Datetime"
+      },
+      {
+        "name": "user_id",
+        "ordinal": 5,
+        "type_info": "Integer"
+      },
+      {
+        "name": "created_at",
+        "ordinal": 6,
+        "type_info": "Datetime"
       }
     ],
     "parameters": {
@@ -37,6 +47,8 @@
       false,
       false,
       true,
+      true,
+      false,
       true
     ]
   },

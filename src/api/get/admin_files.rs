@@ -4,12 +4,12 @@ use sqlx::{Pool, Sqlite};
 
 use crate::{
     db::get_files_from_db,
-    models::{FileDB, User},
+    models::{File, User},
 };
 
 #[derive(Serialize)]
 struct Response {
-    files: Vec<FileDB>,
+    files: Vec<File>,
 }
 
 pub async fn admin_files(

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n            UPDATE files \n            SET created_at = current_timestamp\n            WHERE saved_name = ?\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "01a3e62c439ce2e1c43c6f46419b5be71af7ad245dae7eb85cb5f18204e4e543"
+}
