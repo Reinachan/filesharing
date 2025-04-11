@@ -13,12 +13,12 @@ pub async fn edit_user_password(
         
         UPDATE users 
         SET password = ?
-        WHERE username = ?;
+        WHERE id = ?;
         
         COMMIT;
         ",
         user.password,
-        user.username,
+        user.id,
     )
     .execute(db)
     .await

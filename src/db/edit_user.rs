@@ -13,11 +13,11 @@ pub async fn edit_user_db(
         
         UPDATE users 
         SET password = ?, terminate = ? 
-        WHERE username = ?;
+        WHERE id = ?;
         
         UPDATE permissions
         SET manage_users = ?, upload_files = ?, list_files = ?, delete_files = ?
-        WHERE username = ?;
+        WHERE id = ?;
         
         COMMIT;
         ",
@@ -28,7 +28,7 @@ pub async fn edit_user_db(
         user.permissions.upload_files,
         user.permissions.list_files,
         user.permissions.delete_files,
-        user.username,
+        user.id,
     )
     .execute(db)
     .await

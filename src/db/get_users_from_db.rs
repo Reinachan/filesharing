@@ -7,8 +7,8 @@ pub async fn get_users_from_db(db: Pool<Sqlite>) -> Result<Vec<User>, (StatusCod
     let users = match sqlx::query_as!(
         UserDB,
         "
-    SELECT * FROM users
-    "
+        SELECT * FROM users
+        "
     )
     .fetch_all(&db)
     .await
@@ -20,19 +20,19 @@ pub async fn get_users_from_db(db: Pool<Sqlite>) -> Result<Vec<User>, (StatusCod
     let mut all_users: Vec<User> = Vec::new();
 
     for user in users.iter() {
-        let username = user.username.clone();
+        let id = user.id;
 
         let permissions = sqlx::query_as!(
             PermissionsDB,
             "
-    SELECT * FROM permissions WHERE username = ?
+    SELECT * FROM permissions WHERE id = ?
     ",
-            username
+            id
         )
         .fetch_one(&db)
         .await
         .unwrap_or(PermissionsDB {
-            username: user.username.clone(),
+            id: user.id,
             manage_users: false,
             upload_files: false,
             list_files: false,
@@ -40,6 +40,7 @@ pub async fn get_users_from_db(db: Pool<Sqlite>) -> Result<Vec<User>, (StatusCod
         });
 
         all_users.push(User {
+            id: user.id,
             username: user.username.clone(),
             password: user.password.clone(),
             terminate: user.terminate,

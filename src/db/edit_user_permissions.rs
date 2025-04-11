@@ -1,11 +1,11 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-use crate::models::UserWithoutPassword;
+use crate::models::UserPermissions;
 
 pub async fn edit_user_permissions(
     db: &Pool<Sqlite>,
-    user: &UserWithoutPassword,
+    user: &UserPermissions,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
     let query = sqlx::query!(
         "
@@ -13,21 +13,21 @@ pub async fn edit_user_permissions(
         
         UPDATE users
         SET terminate = ?
-        WHERE username = ?;
+        WHERE id = ?;
         
         UPDATE permissions
         SET manage_users = ?, upload_files = ?, list_files = ?, delete_files = ?
-        WHERE username = ?;
+        WHERE id = ?;
         
         COMMIT;
         ",
         user.terminate,
-        user.username,
+        user.id,
         user.permissions.manage_users,
         user.permissions.upload_files,
         user.permissions.list_files,
         user.permissions.delete_files,
-        user.username,
+        user.id,
     )
     .execute(db)
     .await

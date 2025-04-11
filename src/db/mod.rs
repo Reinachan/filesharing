@@ -6,6 +6,7 @@ mod edit_user_password;
 mod edit_user_permissions;
 mod get_file_from_db;
 mod get_files_from_db;
+mod get_user_by_username;
 mod get_user_from_db;
 mod get_users_from_db;
 
@@ -17,5 +18,6 @@ pub use edit_user_password::edit_user_password;
 pub use edit_user_permissions::edit_user_permissions;
 pub use get_file_from_db::get_file_from_db;
 pub use get_files_from_db::get_files_from_db;
+pub use get_user_by_username::get_user_by_username;
 pub use get_user_from_db::get_user_from_db;
 pub use get_users_from_db::get_users_from_db;

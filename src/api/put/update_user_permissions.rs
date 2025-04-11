@@ -3,13 +3,13 @@ use sqlx::{Pool, Sqlite};
 
 use crate::{
     db::edit_user_permissions,
-    models::{User, UserWithoutPassword},
+    models::{User, UserPermissions},
 };
 
 pub async fn update_user_permissions(
     State(db): State<Pool<Sqlite>>,
     Extension(user): Extension<User>,
-    Json(req_user): Json<UserWithoutPassword>,
+    Json(req_user): Json<UserPermissions>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     // disallow users without manage user priviledges to change a user's permissions
     if !user.permissions.manage_users {

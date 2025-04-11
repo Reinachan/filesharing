@@ -46,15 +46,17 @@ pub async fn all_users(
                                         button
                                             formenctype="multipart/form-data"
                                             formaction=(link_path("/delete-user"))
-                                            value=(user.username)
+                                            value=(user.id)
                                             formmethod="post"
-                                            name="username"
+                                            name="id"
                                             type="submit"
                                             { img type="image/svg+xml" src="assets/rubbish.svg"; }
                                     }
                                     h3 { (user.username) }
+                                    p { "User ID: " (user.id) }
                                 }
                                 form class="content" enctype="multipart/form-data" action=(link_path("/edit-user")) method="post" {
+                                    input name="id" value=(user.id) type="hidden";
                                     input name="username" value=(user.username) type="hidden";
                                     @if let Some(terminate) = user.terminate {
                                         input name="terminate" value=(terminate.format("%Y-%m-%dT%H:%M:%S").to_string()) type="hidden";

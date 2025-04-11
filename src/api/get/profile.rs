@@ -16,9 +16,10 @@ pub async fn profile(
     State(db): State<Pool<Sqlite>>,
     Extension(user): Extension<User>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    let user = get_user_from_db(user.username, &db).await?;
+    let user = get_user_from_db(user.id, &db).await?;
     Ok(Json(GetCurrentUserResponse {
         user: UserWithoutPassword {
+            id: user.id,
             username: user.username,
             terminate: user.terminate,
             permissions: user.permissions,

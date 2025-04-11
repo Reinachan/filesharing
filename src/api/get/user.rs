@@ -20,17 +20,20 @@ pub struct Response {
 pub async fn user(
     State(db): State<Pool<Sqlite>>,
     Extension(user): Extension<User>,
-    Path(username): Path<String>,
+    Path(id): Path<String>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
-    if username != user.username && !user.permissions.manage_users {
+    let id = id.parse().unwrap_or(0);
+
+    if id != user.id && !user.permissions.manage_users {
         return Err((
             StatusCode::FORBIDDEN,
             "You don't have the permissions to get information about other users".to_string(),
         ));
     }
-    let user = get_user_from_db(username, &db).await?;
+    let user = get_user_from_db(id, &db).await?;
     Ok(Json(Response {
         user: UserWithoutPassword {
+            id: user.id,
             username: user.username,
             terminate: user.terminate,
             permissions: user.permissions,

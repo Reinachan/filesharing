@@ -11,7 +11,7 @@ use crate::{
     db::{create_user_db, delete_user_db, edit_user_db},
     handlers::{AuthOrBasic, check_auth},
     helpers::link_path,
-    models::{Permissions, User},
+    models::{CreateUserDB, Permissions, User},
 };
 
 pub async fn create_user(
@@ -71,7 +71,7 @@ pub async fn create_user(
 
     create_user_db(
         &db,
-        User {
+        CreateUserDB {
             username,
             password,
             terminate,
@@ -100,17 +100,17 @@ pub async fn delete_user(
     )
     .await?;
 
-    let mut username = String::new();
+    let mut id = 0;
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let field_name = field.name().unwrap().to_string();
 
-        if field_name == *"username" {
-            username = field.text().await.unwrap();
+        if field_name == *"id" {
+            id = field.text().await.unwrap().parse().unwrap();
         }
     }
 
-    delete_user_db(&db, username).await?;
+    delete_user_db(&db, id).await?;
 
     Ok(Redirect::to(&link_path("/users")))
 }
@@ -132,6 +132,7 @@ pub async fn edit_user(
     )
     .await?;
 
+    let mut id: i64 = 0;
     let mut username = String::new();
     let mut password = String::new();
     let mut terminate: Option<NaiveDateTime> = None;
@@ -140,7 +141,9 @@ pub async fn edit_user(
     while let Some(field) = multipart.next_field().await.unwrap() {
         let field_name = field.name().unwrap().to_string();
 
-        if field_name == *"username" {
+        if field_name == *"id" {
+            id = field.text().await.unwrap().parse().unwrap();
+        } else if field_name == *"username" {
             username = field.text().await.unwrap();
         } else if field_name == *"password" {
             let field_password = field.text().await.unwrap();
@@ -166,6 +169,7 @@ pub async fn edit_user(
     edit_user_db(
         &db,
         User {
+            id,
             username,
             password,
             terminate,
