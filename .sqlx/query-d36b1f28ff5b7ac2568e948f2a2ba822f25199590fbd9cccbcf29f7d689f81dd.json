@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        BEGIN TRANSACTION;\n        \n        UPDATE users \n        SET password = ?\n        WHERE id = ?;\n        \n        COMMIT;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "d36b1f28ff5b7ac2568e948f2a2ba822f25199590fbd9cccbcf29f7d689f81dd"
+}
