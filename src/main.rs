@@ -92,6 +92,7 @@ async fn main() {
         .route("/user/{username}", get(get::user).delete(delete::user))
         .route("/user/permissions", put(put::update_user_permissions))
         .route("/user/password", put(put::update_password))
+        .route("/user/username", put(put::update_username))
         .route("/users", get(get::users))
         .route(
             "/admin/files",
