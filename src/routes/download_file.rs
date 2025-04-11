@@ -28,7 +28,7 @@ pub async fn download_file(
         }
     }
 
-    let db_file = match get_file_from_db(db, file_name.clone()).await {
+    let db_file = match get_file_from_db(&db, &file_name).await {
         Ok(value) => value,
         Err(err) => {
             // this verification will always fail. Prevents filename guessing.

@@ -98,6 +98,7 @@ async fn main() {
             "/admin/files",
             get(get::admin_files).delete(delete::admin_files),
         )
+        .route("/files", get(get::own_files).delete(delete::own_files))
         .layer(middleware::from_fn_with_state(
             conn.clone(),
             authorization_middleware,
