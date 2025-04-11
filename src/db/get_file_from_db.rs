@@ -4,8 +4,8 @@ use sqlx::{Pool, Sqlite};
 use crate::models::File;
 
 pub async fn get_file_from_db(
-    db: Pool<Sqlite>,
-    file_name: String,
+    db: &Pool<Sqlite>,
+    file_name: &String,
 ) -> Result<File, (StatusCode, String)> {
     let file = match sqlx::query_as!(
         File,
@@ -17,7 +17,7 @@ pub async fn get_file_from_db(
         ",
         file_name
     )
-    .fetch_one(&db)
+    .fetch_one(db)
     .await
     {
         Ok(res) => res,

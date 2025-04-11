@@ -1,0 +1,62 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        select saved_name, file_name, file_type, files.password, destroy, user_id, username, created_at\n        from files\n        inner join users on files.user_id = users.id\n        ",
+  "describe": {
+    "columns": [
+      {
+        "name": "saved_name",
+        "ordinal": 0,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_name",
+        "ordinal": 1,
+        "type_info": "Text"
+      },
+      {
+        "name": "file_type",
+        "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "password",
+        "ordinal": 3,
+        "type_info": "Text"
+      },
+      {
+        "name": "destroy",
+        "ordinal": 4,
+        "type_info": "Datetime"
+      },
+      {
+        "name": "user_id",
+        "ordinal": 5,
+        "type_info": "Integer"
+      },
+      {
+        "name": "username",
+        "ordinal": 6,
+        "type_info": "Text"
+      },
+      {
+        "name": "created_at",
+        "ordinal": 7,
+        "type_info": "Datetime"
+      }
+    ],
+    "parameters": {
+      "Right": 0
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "5af8a5a872e47413e6ee1f7e066938adb5f8ef5e6723e624dd1a175675ad0648"
+}

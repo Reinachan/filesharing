@@ -14,7 +14,7 @@ pub async fn get_file(
     State(db): State<Pool<Sqlite>>,
     Path(file_name): Path<String>,
 ) -> impl IntoResponse {
-    let db_file = get_file_from_db(db, file_name.clone()).await?;
+    let db_file = get_file_from_db(&db, &file_name).await?;
 
     if db_file.password.is_some() {
         return Err((StatusCode::NOT_FOUND, "File not found".to_owned()));

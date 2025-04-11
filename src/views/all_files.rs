@@ -4,7 +4,7 @@ use maud::{DOCTYPE, html};
 use sqlx::{Pool, Sqlite};
 
 use crate::{
-    db::get_files_from_db,
+    db::get_all_files_from_db,
     handlers::{AuthOrBasic, check_auth},
     helpers::link_path,
     models::Permissions,
@@ -28,7 +28,7 @@ pub async fn all_files(
     )
     .await?;
 
-    let files = get_files_from_db(db).await?;
+    let files = get_all_files_from_db(db).await?;
 
     Ok(Html(
         html! {

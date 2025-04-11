@@ -19,7 +19,7 @@ pub use edit_user_password::edit_user_password;
 pub use edit_user_permissions::edit_user_permissions;
 pub use edit_user_username::edit_user_username;
 pub use get_file_from_db::get_file_from_db;
-pub use get_files_from_db::get_files_from_db;
+pub use get_files_from_db::{get_all_files_from_db, get_own_files_from_db};
 pub use get_user_by_username::get_user_by_username;
 pub use get_user_from_db::get_user_from_db;
 pub use get_users_from_db::get_users_from_db;

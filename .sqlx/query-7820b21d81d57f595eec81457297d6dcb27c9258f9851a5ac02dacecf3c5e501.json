@@ -1,6 +1,6 @@
 {
   "db_name": "SQLite",
-  "query": "\n        select saved_name, file_name, file_type, files.password, destroy, user_id, username, created_at\nfrom files\ninner join users on files.user_id = users.id\n        ",
+  "query": "\n        select saved_name, file_name, file_type, files.password, destroy, user_id, username, created_at\n        from files\n        inner join users on files.user_id = users.id\n        where user_id = ?\n        ",
   "describe": {
     "columns": [
       {
@@ -45,7 +45,7 @@
       }
     ],
     "parameters": {
-      "Right": 0
+      "Right": 1
     },
     "nullable": [
       false,
@@ -58,5 +58,5 @@
       true
     ]
   },
-  "hash": "0f6b1342ce0da807541e666f0334dcad89ccddef658063701231ddd1eb54c4a4"
+  "hash": "7820b21d81d57f595eec81457297d6dcb27c9258f9851a5ac02dacecf3c5e501"
 }
