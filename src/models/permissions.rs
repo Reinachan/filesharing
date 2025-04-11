@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct PermissionsDB {
-    pub username: String,
+    pub id: i64,
     pub manage_users: bool,
     pub upload_files: bool,
     pub list_files: bool,

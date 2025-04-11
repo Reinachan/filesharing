@@ -13,7 +13,7 @@ pub async fn update_password(
     Json(req_user): Json<UsernamePassword>,
 ) -> Result<impl IntoResponse, (StatusCode, String)> {
     // disallow users without manage user priviledges from editing another user's password
-    if req_user.username != user.username && !user.permissions.manage_users {
+    if req_user.id != user.id && !user.permissions.manage_users {
         return Err((
             StatusCode::FORBIDDEN,
             "You don't have the permissions to change the password of other users".to_string(),
@@ -23,7 +23,7 @@ pub async fn update_password(
     edit_user_password(
         &db,
         UsernamePassword {
-            username: req_user.username,
+            id: req_user.id,
             password: hash(req_user.password, DEFAULT_COST).unwrap(),
         },
     )

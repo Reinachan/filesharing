@@ -22,6 +22,7 @@ pub async fn users(
             let users: Vec<UserWithoutPassword> = users
                 .iter()
                 .map(|u| UserWithoutPassword {
+                    id: u.id,
                     username: u.username.clone(),
                     terminate: u.terminate,
                     permissions: u.permissions,

@@ -1,23 +1,24 @@
 use axum::http::StatusCode;
 use sqlx::{Pool, Sqlite};
 
-use crate::models::User;
+use crate::models::{CreateUserDB, User};
+
+use super::get_user_by_username;
 
 pub async fn create_user_db(
     db: &Pool<Sqlite>,
-    user: User,
-) -> Result<(StatusCode, String), (StatusCode, String)> {
+    user: CreateUserDB,
+) -> Result<User, (StatusCode, String)> {
     sqlx::query!(
         "
         BEGIN TRANSACTION;
         INSERT INTO users (username, password, terminate) values (?, ?, ?);
-        INSERT INTO permissions (username, manage_users, upload_files, list_files, delete_files) values (?, ?, ?, ?, ?);
+        INSERT INTO permissions (id, manage_users, upload_files, list_files, delete_files) values (last_insert_rowid(), ?, ?, ?, ?);
         COMMIT;
         ",
         user.username,
         user.password,
         user.terminate,
-        user.username,
         user.permissions.manage_users,
         user.permissions.upload_files,
         user.permissions.list_files,
@@ -25,12 +26,19 @@ pub async fn create_user_db(
     )
     .execute(db)
     .await
-    .map_err(|_| {
+    .map_err(|err| {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            "Couldn't create user".to_owned(),
+            format!("Couldn't create user, {}", err)
         )
     })?;
 
-    Ok((StatusCode::OK, "Created user".to_owned()))
+    get_user_by_username(&user.username, db)
+        .await
+        .map_err(|err| {
+            (
+                err,
+                "Somehow we can't find the user you just created?".to_string(),
+            )
+        })
 }

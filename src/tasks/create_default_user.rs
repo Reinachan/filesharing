@@ -5,7 +5,7 @@ use bcrypt::{DEFAULT_COST, hash};
 
 use crate::{
     db::create_user_db,
-    models::{Permissions, User},
+    models::{CreateUserDB, Permissions},
 };
 
 pub async fn create_default_user(db: Pool<Sqlite>) {
@@ -25,7 +25,7 @@ pub async fn create_default_user(db: Pool<Sqlite>) {
         delete_files: true,
     };
 
-    let user = User {
+    let user = CreateUserDB {
         username,
         password,
         terminate: None,

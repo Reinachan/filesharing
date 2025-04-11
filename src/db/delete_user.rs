@@ -3,17 +3,17 @@ use sqlx::{Pool, Sqlite};
 
 pub async fn delete_user_db(
     db: &Pool<Sqlite>,
-    username: String,
+    id: i64,
 ) -> Result<(StatusCode, String), (StatusCode, String)> {
     let query = sqlx::query!(
         "
         BEGIN TRANSACTION;
-        DELETE FROM permissions WHERE username = ?;
-        DELETE FROM users WHERE username = ?;
+        DELETE FROM permissions WHERE id = ?;
+        DELETE FROM users WHERE id = ?;
         COMMIT;
         ",
-        username,
-        username
+        id,
+        id
     )
     .execute(db)
     .await
@@ -30,5 +30,5 @@ pub async fn delete_user_db(
         return Err((StatusCode::NOT_FOUND, "User does not exist".to_owned()));
     }
 
-    Ok((StatusCode::OK, format!("Deleted user: {}", username)))
+    Ok((StatusCode::OK, format!("Deleted user: {}", id)))
 }

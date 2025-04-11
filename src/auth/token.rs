@@ -11,7 +11,7 @@ use jsonwebtoken::{DecodingKey, EncodingKey, Header, TokenData, Validation, deco
 use serde::{Deserialize, Serialize};
 use sqlx::{Pool, Sqlite};
 
-use crate::models::{Permissions, PermissionsDB, User, UserDB};
+use crate::db::get_user_by_username;
 
 // Define a structure for holding claims data used in JWT tokens
 #[derive(Serialize, Deserialize)]
@@ -37,7 +37,9 @@ pub async fn request_token(
     State(db): State<Pool<Sqlite>>,
     Json(user_data): Json<SignInData>,
 ) -> Result<Json<TokenResponse>, StatusCode> {
-    let user = retrieve_user_by_username(&user_data.username, &db).await?;
+    let user = get_user_by_username(&user_data.username, &db)
+        .await
+        .map_err(|_| StatusCode::UNAUTHORIZED)?;
 
     if !verify(&user_data.password, &user.password)
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
@@ -48,51 +50,6 @@ pub async fn request_token(
     let token = encode_jwt(user.username).map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
 
     Ok(Json(TokenResponse { token }))
-}
-
-/// Retrives the user data from the database. Includes the permissions and the password hash
-async fn retrieve_user_by_username(username: &str, db: &Pool<Sqlite>) -> Result<User, StatusCode> {
-    let user = sqlx::query_as!(
-        UserDB,
-        "
-        SELECT * FROM users WHERE username = ?
-        ",
-        username
-    )
-    .fetch_one(db)
-    .await
-    .map_err(|_| (StatusCode::UNAUTHORIZED))?;
-
-    let permissions = sqlx::query_as!(
-        PermissionsDB,
-        "
-        SELECT * FROM permissions WHERE username = ?
-        ",
-        username
-    )
-    .fetch_one(db)
-    .await
-    .unwrap_or(PermissionsDB {
-        username: user.username.clone(),
-        manage_users: false,
-        upload_files: false,
-        list_files: false,
-        delete_files: false,
-    });
-
-    let permissions: Permissions = Permissions {
-        manage_users: permissions.manage_users,
-        upload_files: permissions.upload_files,
-        list_files: permissions.list_files,
-        delete_files: permissions.delete_files,
-    };
-
-    Ok(User {
-        username: user.username,
-        password: user.password,
-        terminate: user.terminate,
-        permissions,
-    }) // Return the hardcoded user
 }
 
 pub fn encode_jwt(username: String) -> Result<String, StatusCode> {
@@ -199,7 +156,7 @@ pub async fn authorization_middleware(
         }
     };
 
-    let user = retrieve_user_by_username(&token_data.claims.username, &db)
+    let user = get_user_by_username(&token_data.claims.username, &db)
         .await
         .map_err(|_| {
             (

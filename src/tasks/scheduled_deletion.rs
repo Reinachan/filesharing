@@ -40,7 +40,7 @@ pub async fn scheduled_deletion(db: Pool<Sqlite>) -> Result<(), (StatusCode, Str
         UserDB,
         "
     SELECT * FROM users
-    WHERE terminate < ? 
+    WHERE terminate < ?
     ",
         timestamp
     )
@@ -54,7 +54,7 @@ pub async fn scheduled_deletion(db: Pool<Sqlite>) -> Result<(), (StatusCode, Str
                     user.username,
                     user.terminate.unwrap()
                 );
-                delete_user_db(&db, user.username.clone()).await?;
+                delete_user_db(&db, user.id).await?;
             }
         }
         Err(_) => todo!(),

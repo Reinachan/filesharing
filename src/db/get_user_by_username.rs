@@ -3,29 +3,24 @@ use sqlx::{Pool, Sqlite};
 
 use crate::models::{Permissions, PermissionsDB, User, UserDB};
 
-pub async fn get_user_from_db(id: i64, db: &Pool<Sqlite>) -> Result<User, (StatusCode, String)> {
+pub async fn get_user_by_username(username: &str, db: &Pool<Sqlite>) -> Result<User, StatusCode> {
     let user = sqlx::query_as!(
         UserDB,
         "
-        SELECT * FROM users WHERE id = ?
+        SELECT * FROM users WHERE username = ?
         ",
-        id
+        username
     )
     .fetch_one(db)
     .await
-    .map_err(|_| {
-        (
-            StatusCode::INTERNAL_SERVER_ERROR,
-            "Cannot find a user by that username".to_string(),
-        )
-    })?;
+    .map_err(|_| (StatusCode::NOT_FOUND))?;
 
     let permissions = sqlx::query_as!(
         PermissionsDB,
         "
         SELECT * FROM permissions WHERE id = ?
         ",
-        id
+        user.id
     )
     .fetch_one(db)
     .await
@@ -50,5 +45,5 @@ pub async fn get_user_from_db(id: i64, db: &Pool<Sqlite>) -> Result<User, (Statu
         password: user.password,
         terminate: user.terminate,
         permissions,
-    })
+    }) // Return the hardcoded user
 }

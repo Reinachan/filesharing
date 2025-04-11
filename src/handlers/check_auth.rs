@@ -59,9 +59,9 @@ pub async fn check_auth(
     let permissions = sqlx::query_as!(
         PermissionsDB,
         "
-        SELECT * FROM permissions WHERE username = ?
+        SELECT * FROM permissions WHERE id = ?
         ",
-        username
+        user.id
     )
     .fetch_one(db)
     .await
@@ -92,6 +92,7 @@ pub async fn check_auth(
     }
 
     Ok(User {
+        id: user.id,
         username: user.username,
         password: user.password,
         permissions: Permissions {

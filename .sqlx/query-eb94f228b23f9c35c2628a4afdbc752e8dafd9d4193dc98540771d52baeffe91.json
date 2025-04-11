@@ -1,12 +1,12 @@
 {
   "db_name": "SQLite",
-  "query": "\n        SELECT * FROM permissions WHERE username = ?\n        ",
+  "query": "\n        SELECT * FROM permissions WHERE id = ?\n        ",
   "describe": {
     "columns": [
       {
-        "name": "username",
+        "name": "id",
         "ordinal": 0,
-        "type_info": "Text"
+        "type_info": "Integer"
       },
       {
         "name": "manage_users",
@@ -40,5 +40,5 @@
       false
     ]
   },
-  "hash": "4aee93f72ea0df367c241e10b42e9a3f919b29271856b7d99f4597c6d8b0cac2"
+  "hash": "eb94f228b23f9c35c2628a4afdbc752e8dafd9d4193dc98540771d52baeffe91"
 }

@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "\n        BEGIN TRANSACTION;\n        DELETE FROM permissions WHERE id = ?;\n        DELETE FROM users WHERE id = ?;\n        COMMIT;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "b7d8370f4a4a130d1f1b582a5948891b096969a9cdf7119b5a218680519ac130"
+}

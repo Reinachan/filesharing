@@ -40,6 +40,7 @@ pub async fn profile(
                 body {
                     (nav(Routes::Profile, Some(&user.username), Some(user.permissions)))
                     h2 { (user.username) }
+                    p { "User ID: " (user.id) }
                     h3 { "Permissions" }
                     ul {
                         @for permission in permissions {

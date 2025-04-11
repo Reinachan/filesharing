@@ -1,32 +1,38 @@
 {
   "db_name": "SQLite",
-  "query": "\n    SELECT * FROM users\n    WHERE terminate < ? \n    ",
+  "query": "\n        SELECT * FROM users\n        ",
   "describe": {
     "columns": [
       {
-        "name": "username",
+        "name": "id",
         "ordinal": 0,
-        "type_info": "Text"
+        "type_info": "Integer"
       },
       {
-        "name": "password",
+        "name": "username",
         "ordinal": 1,
         "type_info": "Text"
       },
       {
-        "name": "terminate",
+        "name": "password",
         "ordinal": 2,
+        "type_info": "Text"
+      },
+      {
+        "name": "terminate",
+        "ordinal": 3,
         "type_info": "Datetime"
       }
     ],
     "parameters": {
-      "Right": 1
+      "Right": 0
     },
     "nullable": [
+      false,
       false,
       false,
       true
     ]
   },
-  "hash": "b67bc7a7714ff9225054eab793c4b69bdbb70cfb8ddbc34247fc8f6097a105a6"
+  "hash": "a2c624a66b1999281d3b63e85b77785d0aae8d5ebc4865b7d42d7afd81e6f58c"
 }
